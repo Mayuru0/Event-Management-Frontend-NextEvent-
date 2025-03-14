@@ -4,10 +4,11 @@ import React from "react";
 import PeopleWhatSay from "./people_what_say";
 import Image from "next/image";
 import { useGetAllEventsQuery } from "@/Redux/features/eventApiSlice";
-import Swal from "sweetalert2"; // Import SweetAlert2
+import Swal from "sweetalert2";
 import { useSelector } from "react-redux";
 import { selectuser } from "@/Redux/features/authSlice";
 import { useRouter } from "next/navigation";
+
 const averiaGruesaLibre = Averia_Gruesa_Libre({
   subsets: ["latin"],
   weight: ["400"],
@@ -20,7 +21,7 @@ const Event = () => {
 
   if (isLoading) {
     return (
-      <p className="text-center text-xl font-semibold text-white relative -mt-[20%] ">
+      <p className="text-center text-xl md:text-2xl font-semibold text-white mt-10">
         Loading events...
       </p>
     );
@@ -53,61 +54,62 @@ const Event = () => {
     }
   };
 
-  // Show only the first 3 events
   const eventsToShow = events.slice(0, 3);
 
   return (
-    <div className="flex flex-wrap justify-center py-8">
-      <div className="h-[165px] flex-col justify-center items-center gap-8 flex">
-        <div className="self-stretch text-center text-white text-5xl font-bold leading-[57.60px] font-raleway">
+    <div className="flex flex-col items-center py-8 px-4 md:px-8">
+      <div className="text-center space-y-4 mb-6">
+        <h2 className="text-white text-3xl md:text-5xl font-bold">
           Explore Upcoming Events
-        </div>
-        <div className=" text-center text-[#b0b0b0] text-lg font-normal font-kulim">
+        </h2>
+        <p className="text-[#b0b0b0] text-base md:text-lg">
           Discover a variety of exciting events happening soon! Whether
           you&apos;re looking to attend or organize, explore our events by
           category and find the perfect experience for you. Don’t miss out on
           the fun—sign up or buy your tickets today!
-        </div>
+        </p>
       </div>
-      <div className="flex flex-wrap justify-center gap-8 py-px mt-8 font-kulim">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
         {eventsToShow.map((event, index) => (
           <div
             key={index}
-            className="w-[405px] h-[530px] bg-[#1f1f1f] rounded-[10px] shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] flex-col justify-start items-start inline-flex overflow-hidden"
+            className="bg-[#1f1f1f] rounded-[10px] shadow-lg flex flex-col overflow-hidden"
           >
             <Image
               width={405}
-              height={530}
-              className="w-[405px] h-[285px]"
-              src={event.image || "/path/to/default/image.jpg"} // Provide a fallback image if event.image is null or undefined
+              height={285}
+              className="w-full h-[250px] object-cover"
+              src={event.image || "/path/to/default/image.jpg"}
               alt={event.title}
             />
 
-            <div className="self-stretch grow shrink basis-0 px-[30px] py-[25px] flex-col justify-between items-center flex">
-              <div className="self-stretch justify-between items-center inline-flex">
-                <div className="text-center text-white text-2xl font-bold font-raleway leading-[28.80px]">
+            <div className="p-5 flex flex-col space-y-3">
+              <div className="flex justify-between items-center">
+                <h3 className="text-white text-xl md:text-2xl font-bold">
                   {event.title}
-                </div>
-                <div
-                  className={`text-center text-[#03dac6] text-[34px] font-light font-serif leading-[40.80px] ${averiaGruesaLibre.className}`}
+                </h3>
+                <span
+                  className={`text-[#03dac6] text-2xl md:text-3xl font-light ${averiaGruesaLibre.className}`}
                 >
                   {event.ticket_price}
-                </div>
+                </span>
               </div>
-              <div className="self-stretch justify-between items-center inline-flex">
-                <div className="text-center text-[#b0b0b0] text-lg font-normal font-kulim leading-[25.20px]">
+
+              <div className="flex justify-between text-[#b0b0b0] text-sm md:text-lg">
+                <span>
                   {new Date(event.date || "Unknown Date").toLocaleDateString()}
-                </div>
-                <div className="text-center text-[#b0b0b0] text-lg font-normal font-kulim leading-[25.20px]">
-                  {event.location}
-                </div>
+                </span>
+                <span>{event.location}</span>
               </div>
-              <div className="self-stretch h-11 text-center text-[#888888] text-base font-normal leading-snug">
+
+              <p className="text-[#888888] text-sm md:text-base line-clamp-2">
                 {event.description}
-              </div>
+              </p>
+
               <button
                 onClick={() => handleBuyTicket(event._id)}
-                className="w-full bg-[#6200EE] hover:bg-purple-700 text-white py-2 px-4 rounded-full transition-colors duration-200"
+                className="w-full bg-[#6200EE] hover:bg-purple-700 text-white py-2 px-4 rounded-full transition duration-200"
               >
                 Buy Tickets
               </button>
@@ -115,6 +117,7 @@ const Event = () => {
           </div>
         ))}
       </div>
+
       <PeopleWhatSay />
     </div>
   );
