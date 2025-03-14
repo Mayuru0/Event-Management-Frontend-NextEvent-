@@ -147,7 +147,7 @@ export default function EventCard() {
 
 console.log(events)
   return (
-    <div className="min-h-screen text-white">
+    <div className="min-h-screen text-white mt-[2%] md:mt-0">
       <ESearchBar onSearch={handleSearch} />
 
       <div className="max-w-7xl mx-auto p-6">

@@ -25,7 +25,7 @@ export default function ESearchBar({ onSearch }: ESearchBarProps) {
   const handleSearch = () => {
     onSearch({ location, date, event_type })
   } 
-  
+
   // Extract unique locations from events
   const locations = [...new Set(events.map(event => event.location))]
   const types = [...new Set(events.map(event => event.event_type))]
@@ -36,20 +36,18 @@ export default function ESearchBar({ onSearch }: ESearchBarProps) {
     setDate(selectedDate) // Store the date in yyyy-mm-dd format
   }
 
-  
-
   return (
-    <div className="w-full max-w-4xl mx-auto px-4 py-6 -mt-[30%] relative ">
+    <div className="w-full max-w-4xl mx-auto px-4 py-6 relative">
       <div className="bg-white shadow-lg rounded-3xl md:rounded-full">
-        <div className="grid grid-cols-1 md:grid-cols-[1.5fr,1fr,1fr,auto] items-center">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 items-center gap-4 p-4">
           {/* Location */}
-          <div className="p-3 border-b md:border-b-0 md:border-r mt-2 h-10 border-gray-400 relative group">
-            <div className="flex items-center gap-2 hover:bg-gray-100 rounded-t-3xl md:rounded-l-full md:rounded-tr-none p-2 -mt-6 cursor-pointer">
+          <div className="h-10 border-gray-400 relative group">
+            <div className="flex items-center gap-2 hover:bg-gray-100 rounded-t-3xl p-2 cursor-pointer">
               <MapPin className="w-4 h-4 text-gray-500 flex-shrink-0" />
-              <div className="grid text-left w-full">
-                <span className="text-xs font-medium font-kulim text-[#121212]">Location</span>
+              <div className="text-left w-full">
+                <span className="text-xs font-medium text-[#121212]">Location</span>
                 <select
-                  className="text-sm font-kulim text-gray-600 bg-transparent border-none focus:outline-none cursor-pointer w-full"
+                  className="text-sm text-gray-600 bg-transparent border-none focus:outline-none cursor-pointer w-full"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
                 >
@@ -65,16 +63,16 @@ export default function ESearchBar({ onSearch }: ESearchBarProps) {
           </div>
 
           {/* Date */}
-          <div className="p-3 border-b md:border-b-0 md:border-r mt-2 h-10 border-gray-400">
-            <div className="flex items-center gap-2 hover:bg-gray-100 p-2 cursor-pointer -mt-6">
+          <div className="h-10 border-gray-400">
+            <div className="flex items-center gap-2 hover:bg-gray-100 p-2 cursor-pointer">
               <CalendarDays className="w-4 h-4 text-gray-500 flex-shrink-0" />
-              <div className="grid text-left w-full">
-                <span className="text-xs font-medium font-kulim text-[#121212]">Date</span>
+              <div className="text-left w-full">
+                <span className="text-xs font-medium text-[#121212]">Date</span>
                 <input
                   type="date"
-                  value={date} 
+                  value={date}
                   onChange={handleDateChange}
-                  className="text-sm font-kulim text-gray-600 bg-transparent border-none focus:outline-none cursor-pointer w-full"
+                  className="text-sm text-gray-600 bg-transparent border-none focus:outline-none cursor-pointer w-full"
                   placeholder="Add Date"
                 />
               </div>
@@ -82,19 +80,19 @@ export default function ESearchBar({ onSearch }: ESearchBarProps) {
           </div>
 
           {/* Type */}
-          <div className="p-3 border-b  md:border-b-0">
+          <div className="h-10 border-gray-400">
             <div className="flex items-center gap-2 hover:bg-gray-100 p-2 cursor-pointer">
-              <div className="grid text-left w-full">
-                <span className="text-xs font-medium font-kulim text-[#121212]">Type</span>
+              <div className="text-left w-full">
+                <span className="text-xs font-medium text-[#121212]">Type</span>
                 <select
-                  className="text-sm font-kulim text-gray-600 bg-transparent border-none focus:outline-none cursor-pointer w-full"
+                  className="text-sm text-gray-600 bg-transparent border-none focus:outline-none cursor-pointer w-full"
                   value={event_type}
                   onChange={(e) => setType(e.target.value)}
                 >
-                   <option value="">Event Type</option>
-                  {types.map((types, index) => (
-                    <option key={index} value={types}>
-                      {types}
+                  <option value="">Event Type</option>
+                  {types.map((type, index) => (
+                    <option key={index} value={type}>
+                      {type}
                     </option>
                   ))}
                 </select>
@@ -104,7 +102,7 @@ export default function ESearchBar({ onSearch }: ESearchBarProps) {
 
           {/* Search Button */}
           <button
-            className="md:m-3 w-12 ml-20 md:ml-0 p-2 md:p-4 rounded-full bg-[#6200EE] hover:bg-purple-700 text-white transition-colors md:w-auto"
+            className="w-full sm:w-20 md:w-auto p-2 md:p-4 rounded-full bg-[#6200EE] hover:bg-purple-700 text-white transition-colors"
             aria-label="Search"
             onClick={handleSearch}
           >

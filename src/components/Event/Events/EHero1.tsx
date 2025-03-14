@@ -3,45 +3,45 @@
 import Image from "next/image";
 import React from "react";
 import hero1 from "./../../../../public/landing.png";
-
 import { useRouter } from "next/navigation";
 import { MdKeyboardArrowLeft } from "react-icons/md";
-
 
 const EHero1 = () => {
   const router = useRouter();
 
   return (
-    <div className="relative  ">
-      <div className="absolute inset-0 mt-[5%] px-24 ">
+    <div className="relative w-full">
+      {/* Back Button */}
+      <div className="absolute inset-0  mt-[15%] md:mt-[5%] px-6 md:px-24">
         <button
           onClick={() => router.push("/")}
-          className="flex items-center text-white text-lg font-medium space-x-2 hover:opacity-80 transition"
+          className="flex items-center text-white text-sm md:text-lg font-medium space-x-2 hover:opacity-80 transition"
         >
           <MdKeyboardArrowLeft size={20} />
           <span>Back to Home</span>
         </button>
       </div>
-      <div className="absolute inset-0 flex mt-[10%] justify-center">
-        <h1 className="text-white text-xl md:text-4xl lg:text-5xl xl:text-5xl font-bold font-raleway">
+
+      {/* Hero Text */}
+      <div className="absolute inset-0 flex flex-col items-center mt-[20%] md:mt-[10%] px-6">
+        <h1 className="text-white text-2xl md:text-4xl lg:text-5xl font-bold text-center">
           Events
         </h1>
-        <h2 className="absolute text-center text-gray-400 text-xs md:text-sm lg:text-base xl:text-lg px-4 mx-auto max-w-6xl mt-[4%]">
-        Discover a variety of exciting events happening soon! Whether you&apos;re looking to attend or organize, explore our events by category and find the perfect experience for you. Don&apos;t miss out on the fun—sign up or buy your tickets today!
-
-      </h2>
-        
+        <h2 className="text-gray-400 text-sm md:text-lg text-center px-4 max-w-2xl mt-4">
+          Discover a variety of exciting events happening soon! Whether you're looking 
+          to attend or organize, explore our events by category and find the perfect 
+          experience for you. Don’t miss out on the fun—sign up or buy your tickets today!
+        </h2>
       </div>
-      {/* <div className="absolute mt-[40%] w-full flex justify-center">
-  <EventCard />
-</div> */}
 
+      {/* Background Image */}
       <Image
         src={hero1}
-        alt="hero1"
-        objectFit="cover"
+        alt="Events Hero"
+        layout="responsive"
         width={1920}
         height={1080}
+        className="w-full h-auto"
       />
     </div>
   );
