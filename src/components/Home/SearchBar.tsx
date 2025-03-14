@@ -1,63 +1,50 @@
-"use client";
+"use client"
 
-import { useGetAllEventsQuery } from "@/Redux/features/eventApiSlice";
-import { useSelector } from "react-redux";
-import { CalendarDays, MapPin, Search } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { selectuser } from "@/Redux/features/authSlice";
+import { useGetAllEventsQuery } from "@/Redux/features/eventApiSlice"
+import { useSelector } from "react-redux"
+import { CalendarDays, MapPin, Search } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { selectuser } from "@/Redux/features/authSlice"
 
-export default function SearchBar({}) {
-  const router = useRouter();
-  const [location, setLocation] = useState("");
-  const [date, setDate] = useState("");
-  const [eventType, setEventType] = useState("");
-  const { data: events = [], isLoading, isError } = useGetAllEventsQuery();
+export default function SearchBar() {
+  const router = useRouter()
+  const [location, setLocation] = useState("")
+  const [date, setDate] = useState("")
+  const [eventType, setEventType] = useState("")
+  const { data: events = [], isLoading, isError } = useGetAllEventsQuery()
 
-  const user = useSelector(selectuser);
+  const user = useSelector(selectuser)
 
-  if (isLoading) return <div>Loading...</div>;
-
-  if (isError) return <div>Error</div>;
+  if (isLoading) return <div className="p-4 text-center">Loading...</div>
+  if (isError) return <div className="p-4 text-center">Error</div>
 
   // Extract unique locations from events
-  const locations = [...new Set(events.map((event) => event.location))];
-  const types = [...new Set(events.map((event) => event.event_type))];
-
-  // // Handle date change and convert it back to yyyy-mm-dd format
-  // const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const selectedDate = e.target.value
-  //   setDate(selectedDate) // Store the date in yyyy-mm-dd format
-  // }
+  const locations = [...new Set(events.map((event) => event.location))]
+  const types = [...new Set(events.map((event) => event.event_type))]
 
   const handleSearch = () => {
-    const searchParams = new URLSearchParams({
-      location,
-      date,
-      event_type: eventType,
-    });
+    const searchParams = new URLSearchParams()
+    if (location) searchParams.set("location", location)
+    if (date) searchParams.set("date", date)
+    if (eventType) searchParams.set("event_type", eventType)
 
-    router.push(`/events?${searchParams.toString()}`);
-  };
+    router.push(`/events?${searchParams.toString()}`)
+  }
 
   const handleNavigate = () => {
-    const params = new URLSearchParams();
-    params.set("role", "organizer");
+    const params = new URLSearchParams()
+    params.set("role", "organizer")
+    router.push(`/auth/signup?${params.toString()}`)
+  }
 
-    router.push(`/auth/signup?${params.toString()}`);
-  };
-
-  // Move this function outside of handleSearch
-  //  const handleNavigate = () => {
-  // router.push(`/auth/signup?role=organizer`);
-  //         };
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 py-6">
-      <div className="bg-white shadow-lg rounded-3xl md:rounded-full">
-        <div className="grid grid-cols-1 md:grid-cols-[1.5fr,1fr,1fr,auto] items-center">
+    <div className="w-full max-w-6xl mx-auto px-4 py-3 sm:py-6">
+      <div className="bg-white shadow-lg rounded-2xl md:rounded-full">
+        <div className="grid grid-cols-1 md:grid-cols-[1.5fr,1fr,1fr,auto] gap-2 md:gap-0">
           {/* Location */}
-          <div className="p-3 border-b md:border-b-0 md:border-r mt-2 h-10 border-gray-400 relative group">
-            <div className="flex items-center gap-2 hover:bg-gray-100 rounded-t-3xl md:rounded-l-full md:rounded-tr-none p-2 -mt-6 cursor-pointer">
+          <div className="p-2 md:p-3 border-b md:border-b-0 md:border-r border-gray-200 relative">
+            <div className="flex items-center gap-2 hover:bg-gray-100 rounded-t-lg md:rounded-l-full md:rounded-tr-none p-2 cursor-pointer">
               <MapPin className="w-4 h-4 text-gray-500 flex-shrink-0" />
               <div className="grid text-left w-full">
                 <span className="text-xs font-medium font-kulim">Location</span>
@@ -78,8 +65,8 @@ export default function SearchBar({}) {
           </div>
 
           {/* Date */}
-          <div className="p-3 border-b md:border-b-0 md:border-r mt-2 h-10 border-gray-400">
-            <div className="flex items-center gap-2 hover:bg-gray-100 p-2 cursor-pointer -mt-6">
+          <div className="p-2 md:p-3 border-b md:border-b-0 md:border-r border-gray-200">
+            <div className="flex items-center gap-2 hover:bg-gray-100 p-2 cursor-pointer">
               <CalendarDays className="w-4 h-4 text-gray-500 flex-shrink-0" />
               <div className="grid text-left w-full">
                 <span className="text-xs font-medium font-kulim">Date</span>
@@ -95,7 +82,7 @@ export default function SearchBar({}) {
           </div>
 
           {/* Type */}
-          <div className="p-3 border-b md:border-b-0">
+          <div className="p-2 md:p-3 border-b md:border-b-0 md:border-r border-gray-200">
             <div className="flex items-center gap-2 hover:bg-gray-100 p-2 cursor-pointer">
               <div className="grid text-left w-full">
                 <span className="text-xs font-medium font-kulim">Type</span>
@@ -105,9 +92,9 @@ export default function SearchBar({}) {
                   onChange={(e) => setEventType(e.target.value)}
                 >
                   <option value="">Event Type</option>
-                  {types.map((types, index) => (
-                    <option key={index} value={types}>
-                      {types}
+                  {types.map((type, index) => (
+                    <option key={index} value={type}>
+                      {type}
                     </option>
                   ))}
                 </select>
@@ -116,24 +103,29 @@ export default function SearchBar({}) {
           </div>
 
           {/* Search Button */}
-          <button
-            className="md:m-3 w-12 ml-20 md:ml-0 p-2 md:p-4 rounded-full bg-[#6200EE] hover:bg-purple-700 text-white transition-colors md:w-auto"
-            aria-label="Search"
-            onClick={handleSearch}
-          >
-            <Search className="w-4 h-4 mx-auto" />
-          </button>
+          <div className="flex justify-center md:justify-start p-2 md:p-0">
+            <button
+              className="w-full md:m-3 p-3 md:p-4 rounded-full bg-[#6200EE] hover:bg-purple-700 text-white transition-colors"
+              aria-label="Search"
+              onClick={handleSearch}
+            >
+              <Search className="w-4 h-4 mx-auto" />
+            </button>
+          </div>
         </div>
       </div>
-      <div className="justify-center items-center text-center">
-      {(!user || user?.role === "organizer") && (
-  <button 
-    onClick={handleNavigate}
-    className="mt-6 text-white border border-white px-5 py-4 rounded-full hover:bg-white/10 font-kulim">
-    Become a Host
-  </button>
-)}
+
+      <div className="flex justify-center items-center mt-4 md:mt-6">
+        {(!user || user?.role === "organizer") && (
+          <button
+            onClick={handleNavigate}
+            className="text-white border border-white px-4 py-2 md:px-5 md:py-4 rounded-full hover:bg-white/10 font-kulim text-sm md:text-base"
+          >
+            Become a Host
+          </button>
+        )}
       </div>
     </div>
-  );
+  )
 }
+

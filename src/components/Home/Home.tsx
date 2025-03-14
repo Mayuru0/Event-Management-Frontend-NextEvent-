@@ -1,12 +1,12 @@
-import React from 'react'
-import Hero1 from './Hero1'
+import Hero1 from "./Hero1"
 
 const Home = () => {
   return (
-    <div>
-   <Hero1/>
-    </div>
+    <section className="w-full">
+      <Hero1 />
+    </section>
   )
 }
 
 export default Home
+
