@@ -75,6 +75,10 @@ const Header = () => {
     dispatch(logout());
     router.push("/");
   };
+  
+  if (!isClient) {
+    return null; // Return nothing before the client-side rendering
+  }
 
   const handleProfileClick = () => {
     const profileRoute =
@@ -84,9 +88,8 @@ const Header = () => {
     router.push(profileRoute);
     setIsOpen(false);
   };
-if (!isClient) {
-    return null; // Return nothing before the client-side rendering
-  }
+
+  if (!isMounted) return null;
   return (
     <header className="w-full fixed top-0 left-0 right-0 bg-transparent backdrop-blur-sm z-50 border-b border-white/10">
       <div className="mx-auto w-full">
