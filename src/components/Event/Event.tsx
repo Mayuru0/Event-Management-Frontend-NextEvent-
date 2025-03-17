@@ -117,8 +117,8 @@ const Event = () => {
           </div>
         ))}
       </div>
-
-      <PeopleWhatSay />
+{/* 
+      <PeopleWhatSay /> */}
     </div>
   );
 };
