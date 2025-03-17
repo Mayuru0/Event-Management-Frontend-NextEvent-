@@ -141,7 +141,7 @@ const handleUpdate = async () => {
   // };
 
   return (
-    <div className="bg-[#1F1F1F] rounded-r-3xl mt-28">
+    <div className="bg-[#1F1F1F] rounded-3xl md:rounded-r-3xl mt-28">
       <div className="max-w-7xl mx-auto px-6 py-12">
         <div className="flex items-center justify-between mb-10">
           <div className="space-y-1">

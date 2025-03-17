@@ -25,7 +25,7 @@ const data = [
 
 const RevenueChart = () => {
   return (
-    <div className="bg-[#121212] p-6 rounded-lg">
+    <div className="bg-[#121212] p-6 rounded-3xl md:rounded-r-3xl ">
       <h3 className="text-white/90 text-base mb-4">
         Total Revenue <span className="text-gray-400">(This Year vs Last Year)</span>
       </h3>
