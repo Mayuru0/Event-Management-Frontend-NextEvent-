@@ -1,7 +1,7 @@
 "use client";
 import { Averia_Gruesa_Libre } from "next/font/google";
 import React from "react";
-import PeopleWhatSay from "./people_what_say";
+//import PeopleWhatSay from "./people_what_say";
 import Image from "next/image";
 import { useGetAllEventsQuery } from "@/Redux/features/eventApiSlice";
 import Swal from "sweetalert2";
