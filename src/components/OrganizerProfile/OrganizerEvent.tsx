@@ -22,7 +22,7 @@ const OrganizerEvents: React.FC<OrganizerEventsProps> = ({ onView }) => {
 
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 8 // Number of items per page
+  const itemsPerPage = 5 // Number of items per page
 
   // Handle pagination: get the events to display based on the current page
   const indexOfLastEvent = currentPage * itemsPerPage
@@ -79,7 +79,7 @@ const OrganizerEvents: React.FC<OrganizerEventsProps> = ({ onView }) => {
               <p className="text-gray-400">Create, update, and track your events effortlessly.</p>
             </div>
             <button
-              className="bg-violet-700 text-white px-4 py-2 rounded-lg self-start sm:self-auto"
+              className="bg-violet-700 text-white px-4 py-2 rounded-lg self-start sm:self-auto "
               onClick={handleNewEventClick}
             >
               New Event +
@@ -152,7 +152,7 @@ const OrganizerEvents: React.FC<OrganizerEventsProps> = ({ onView }) => {
                 </div>
 
                 <button
-                  className="bg-teal-300 text-black px-4 py-2 text-sm rounded-md w-full flex items-center justify-center"
+                  className="bg-teal-300 text-black px-4 py-2 text-sm rounded-md w-full flex items-center justify-cente relative"
                   onClick={() => onView(event)}
                 >
                   View Details <Eye className="ml-1 w-4 h-4" />

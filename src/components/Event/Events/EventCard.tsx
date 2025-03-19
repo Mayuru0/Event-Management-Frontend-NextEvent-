@@ -71,26 +71,28 @@ export default function EventCard() {
       .filter((event) => {
         const eventDate = new Date(event.date); // Convert event.date to a Date object
         return (
+          event.status === "Pending" && // Filter events with "Pending" status
           (filters.location === "" || event.location === filters.location) &&
           (filters.date === "" || eventDate.toISOString().split('T')[0] === filters.date) &&
           (filters.event_type === "" || event.event_type === filters.event_type)
-        )
+        );
       })
       .sort((a, b) => {
         switch (sortBy) {
           case "popularity":
-            return (b.popularity || 0) - (a.popularity || 0)
+            return (b.popularity || 0) - (a.popularity || 0);
           case "latest":
-            return new Date(b.date).getTime() - new Date(a.date).getTime()
+            return new Date(b.date).getTime() - new Date(a.date).getTime();
           case "price-low":
-            return (a.ticket_price || 0) - (b.ticket_price || 0)
+            return (a.ticket_price || 0) - (b.ticket_price || 0);
           case "price-high":
-            return (b.ticket_price || 0) - (a.ticket_price || 0)
+            return (b.ticket_price || 0) - (a.ticket_price || 0);
           default:
-            return 0 // Keep the original order for "relevance"
+            return 0; // Keep the original order for "relevance"
         }
-      })
-  }, [sortBy, filters, events])
+      });
+  }, [sortBy, filters, events]);
+  
   
 
   // Pagination Logic
