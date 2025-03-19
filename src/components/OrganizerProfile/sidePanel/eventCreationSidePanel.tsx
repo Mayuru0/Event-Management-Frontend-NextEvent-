@@ -283,14 +283,14 @@ const handleSubmit = async (e: React.FormEvent) => {
             <option className="bg-transparent" value="">
               Select an event type
             </option>
-            <option className="bg-transparent" value="conference">
-              Conference
+            <option className="bg-transparent" value="Indoor Musical Concert">
+              Indoor Musical Concert
             </option>
-            <option className="bg-transparent" value="workshop">
-              Workshop
+            <option className="bg-transparent" value="Outdoor Musical Concert">
+              Outdoor Musical Concert
             </option>
-            <option className="bg-transparent" value="webinar">
-              Webinar
+            <option className="bg-transparent" value="Standup Comedy show">
+              Standup Comedy show
             </option>
             <option className="bg-transparent" value="meetup">
               Meetup

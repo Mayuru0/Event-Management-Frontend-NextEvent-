@@ -54,7 +54,18 @@ const Event = () => {
     }
   };
 
-  const eventsToShow = events.slice(0, 3);
+   // Filter events that have a "pending" status
+   const pendingEvents = events.filter((event) => event.status === "Pending").slice(0, 3);;
+
+   // If no pending events are available
+   if (pendingEvents.length === 0) {
+     return (
+       <p className="text-center text-white text-xl mt-10">
+         No pending events available.
+       </p>
+     );
+   }
+ 
 
   return (
     <div className="flex flex-col items-center py-8 px-4 md:px-8">
@@ -71,7 +82,7 @@ const Event = () => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
-        {eventsToShow.map((event, index) => (
+        {pendingEvents.map((event, index) => (
           <div
             key={index}
             className="bg-[#1f1f1f] rounded-[10px] shadow-lg flex flex-col overflow-hidden"
@@ -79,22 +90,23 @@ const Event = () => {
             <Image
               width={405}
               height={285}
-              className="w-full h-[250px] object-cover"
+              className="w-full h-auto object-cover"
               src={event.image || "/path/to/default/image.jpg"}
               alt={event.title}
             />
 
             <div className="p-5 flex flex-col space-y-3">
               <div className="flex justify-between items-center">
-                <h3 className="text-white text-xl md:text-2xl font-bold">
+                <h3 className="text-white text-lg md:text-lg font-bold">
                   {event.title}
                 </h3>
-                <span
-                  className={`text-[#03dac6] text-2xl md:text-3xl font-light ${averiaGruesaLibre.className}`}
-                >
-                  {event.ticket_price}
-                </span>
+                
               </div>
+              <span
+                  className={`text-[#03dac6] text-lg md:text-xl font-light ${averiaGruesaLibre.className}`}
+                >
+                  {event.ticket_price}LKR
+                </span>
 
               <div className="flex justify-between text-[#b0b0b0] text-sm md:text-lg">
                 <span>
@@ -103,7 +115,7 @@ const Event = () => {
                 <span>{event.location}</span>
               </div>
 
-              <p className="text-[#888888] text-sm md:text-base line-clamp-2">
+              <p className="text-[#888888] text-sm md:sm line-clamp-2">
                 {event.description}
               </p>
 

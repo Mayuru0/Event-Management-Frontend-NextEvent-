@@ -13,7 +13,7 @@ const EHero1 = () => {
   return (
     <div className="relative w-full">
       {/* Back Button */}
-      <div className="absolute inset-0  mt-[15%] md:mt-[5%] px-6 md:px-24">
+      <div className="absolute inset-0  mt-[20%]  md:mt-[5%] px-6 md:px-24">
         <button
           onClick={() => router.push("/")}
           className="flex items-center text-white text-sm md:text-lg font-medium space-x-2 hover:opacity-80 transition"
@@ -24,7 +24,7 @@ const EHero1 = () => {
       </div>
 
       {/* Hero Text */}
-      <div className="absolute inset-0 flex flex-col items-center mt-[20%] md:mt-[10%] px-6">
+      <div className="absolute inset-0 flex flex-col items-center mt-[30%] md:mt-[10%] px-6">
         <h1 className="text-white text-2xl md:text-4xl lg:text-5xl font-bold text-center">
           Events
         </h1>

@@ -147,7 +147,7 @@ export default function EventCard() {
 
 console.log(events)
   return (
-    <div className="min-h-screen text-white mt-[2%] md:mt-0">
+    <div className=" text-white mt-[29%] md:-mt-[30%]">
       <ESearchBar onSearch={handleSearch} />
 
       <div className="max-w-7xl mx-auto p-6">
@@ -205,11 +205,11 @@ console.log(events)
               <div className="aspect-[4/3] relative">
                 {event.image ? (
                   <Image
-                    src={event.image || "/placeholder.svg"}
-                    alt={event.title}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  width={405}
+                  height={285}
+                  className="w-full h-auto object-cover"
+                  src={event.image || "/path/to/default/image.jpg"}
+                  alt={event.title}
                   />
                 ) : (
                   <div className="w-full h-full bg-gray-700 flex items-center justify-center">
@@ -217,20 +217,30 @@ console.log(events)
                   </div>
                 )}
               </div>
-              <div className="p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-xl font-semibold font-raleway">{event.title}</h3>
-                  <span className="text-2xl font-bold text-[#03DAC6] font-averia">
-                    ${event.ticket_price ? event.ticket_price.toFixed(2) : "Free"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between font-kulim text-lg text-[#B0B0B0] mb-2">
-                  <span>{new Date(event.date || "Unknown Date").toLocaleDateString()}</span>
-                  <span>{event.location || "Unknown Location"}</span>
-                </div>
-                <p className="text-base text-[#888888] mb-4 justify-center font-kulim text-center">
-                  {event.description || "No description available."}
-                </p>
+
+              <div className="p-5 flex flex-col space-y-3">
+              <div className="flex justify-between items-center">
+                <h3 className="text-white text-lg md:text-lg font-bold ">
+                  {event.title}
+                </h3>
+                
+              </div>
+              <span
+                  className={`text-[#03dac6] text-lg md:text-xl font-light `}
+                >
+                  {event.ticket_price}LKR
+                </span>
+
+               <div className="flex justify-between text-[#b0b0b0] text-sm md:text-lg">
+                <span>
+                  {new Date(event.date || "Unknown Date").toLocaleDateString()}
+                </span>
+                <span>{event.location}</span>
+              </div>
+
+              <p className="text-[#888888] text-sm md:text-base line-clamp-2">
+                {event.description}
+              </p>
                 {/* <Link href={`/events/${event._id}`} passHref> */}
                   <button
                   onClick={() => handleBuyTicket(event._id)}

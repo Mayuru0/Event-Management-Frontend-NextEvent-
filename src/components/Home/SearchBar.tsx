@@ -44,7 +44,7 @@ export default function SearchBar() {
         <div className="grid grid-cols-1 md:grid-cols-[1.5fr,1fr,1fr,auto] gap-2 md:gap-0">
           {/* Location */}
           <div className="p-2 md:p-3 border-b md:border-b-0 md:border-r border-gray-200 relative">
-            <div className="flex items-center gap-2 hover:bg-gray-100 rounded-t-lg md:rounded-l-full md:rounded-tr-none p-2 cursor-pointer">
+            <div className="flex items-center gap-2  rounded-t-lg md:rounded-l-full md:rounded-tr-none p-2 cursor-pointer">
               <MapPin className="w-4 h-4 text-gray-500 flex-shrink-0" />
               <div className="grid text-left w-full">
                 <span className="text-xs font-medium font-kulim">Location</span>
@@ -66,7 +66,7 @@ export default function SearchBar() {
 
           {/* Date */}
           <div className="p-2 md:p-3 border-b md:border-b-0 md:border-r border-gray-200">
-            <div className="flex items-center gap-2 hover:bg-gray-100 p-2 cursor-pointer">
+            <div className="flex items-center gap-2  p-2 cursor-pointer">
               <CalendarDays className="w-4 h-4 text-gray-500 flex-shrink-0" />
               <div className="grid text-left w-full">
                 <span className="text-xs font-medium font-kulim">Date</span>
@@ -83,7 +83,7 @@ export default function SearchBar() {
 
           {/* Type */}
           <div className="p-2 md:p-3 border-b md:border-b-0 md:border-r border-gray-200">
-            <div className="flex items-center gap-2 hover:bg-gray-100 p-2 cursor-pointer">
+            <div className="flex items-center gap-2  p-2 cursor-pointer">
               <div className="grid text-left w-full">
                 <span className="text-xs font-medium font-kulim">Type</span>
                 <select
