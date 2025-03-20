@@ -13,6 +13,7 @@ export interface User {
         role: string;
         isLoggedIn: boolean;
         type: string;
+        status: string;
         isVerified: boolean;
         
 }

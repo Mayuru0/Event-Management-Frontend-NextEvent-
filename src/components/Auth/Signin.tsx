@@ -8,7 +8,7 @@ import { MdKeyboardArrowLeft } from "react-icons/md"
 import { useLoginMutation } from "@/Redux/features/authApiSlice"
 import { setCredentials, selectuser } from "@/Redux/features/authSlice"
 import Swal from "sweetalert2"
-import type { User } from "@/type/user"
+import type { User ,LoginResponse } from "@/type/user"
 
 export default function SignIn() {
   const [rememberMe, setRememberMe] = useState(false)
@@ -57,14 +57,14 @@ export default function SignIn() {
     e.preventDefault()
     if (!validateForm()) return
 
-    try {
-      const response = await login(formData).unwrap()
-      if ("user" in response && "token" in response) {
-        dispatch(
-          setCredentials({
-            user: response.user as User,
-            token: response.token as string,
-          }),
+  try {
+    const response: LoginResponse = await login(formData).unwrap();
+  if (response.user?.status === "verified" && response.token) {
+    dispatch(
+      setCredentials({
+        user: response.user as User,
+        token: response.token as string,
+      }),
         )
       } else if (response.data?.user && response.data?.token) {
         dispatch(
@@ -79,7 +79,7 @@ export default function SignIn() {
       Swal.fire({ icon: "success", title: "Success", text: "Login successful" })
     } catch (err) {
       console.error("Login error details:", err)
-      Swal.fire({ icon: "error", title: "Login Failed", text: "Something went wrong during login" })
+      Swal.fire({ icon: "warning", title: "Verification Pending", text: "Your account is not verified yet." });
     }
   }
 
