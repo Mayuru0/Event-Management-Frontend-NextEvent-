@@ -113,35 +113,39 @@ export default function ProfilePage() {
         </div>
 
         {/* Profile Picture */}
-        <div className="flex justify-center md:justify-start mb-8">
-          <div className="md:relative w-24 h-24 group" onClick={handleImageClick}>
-            <Image
-              src={
-                user?.profilePic && user?.profilePic.startsWith("http")
-                  ? user.profilePic
-                  : "/default-profile.png"
-              }
-              alt={user?.name || "Image"}
-              className="rounded-full"
-              width={96}
-              height={96}
-              style={{ objectFit: "cover" }}
-              priority
-            />
-            {isEditing && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                <Camera className="w-8 h-8 text-white" />
-              </div>
-            )}
-          </div>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleImageChange}
-            accept="image/*"
-            className="hidden"
-          />
-        </div>
+        <div className="flex justify-center md:justify-start mb-6 md:mb-8">
+  <div
+    className="relative w-20 h-20 md:w-24 md:h-24 group cursor-pointer"
+    onClick={handleImageClick}
+  >
+    <Image
+      src={
+        user?.profilePic && user?.profilePic.startsWith("http")
+          ? user.profilePic
+          : "/default-profile.png"
+      }
+      alt={user?.name || "Image"}
+      className="rounded-full"
+      width={96}
+      height={96}
+      style={{ objectFit: "cover" }}
+      priority
+    />
+    {isEditing && (
+      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+        <Camera className="w-8 h-8 text-white" />
+      </div>
+    )}
+  </div>
+  <input
+    type="file"
+    ref={fileInputRef}
+    onChange={handleImageChange}
+    accept="image/*"
+    className="hidden"
+  />
+</div>
+
 
         {/* Personal Information */}
         <div className="space-y-6">

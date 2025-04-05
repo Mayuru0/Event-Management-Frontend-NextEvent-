@@ -55,16 +55,16 @@ const OrganizerSideBar = () => {
       {/* Mobile Sidebar Toggle Button */}
       <button
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        className="md:hidden text-white fixed mt-28 left-4 z-50 bg-[#333] p-2 rounded-md"
+        className="lg:hidden text-white fixed mt-28 left-4 z-50 bg-[#333] p-2 rounded-md"
       >
         {isSidebarOpen ? <FiX size={24} /> : <FiMenu size={24} />}
       </button>
 
       {/* Sidebar */}
       <div
-        className={`fixed md:relative md:top-0 top-36 left-0   bg-[#1F1F1F] text-white md:mt-28 rounded-3xl md:rounded-l-3xl flex flex-col justify-between p-4 transition-transform transform ${
+        className={`fixed lg:relative lg:top-0  top-36 left-0   bg-[#1F1F1F] text-white lg:mt-28 rounded-3xl md:rounded-l-3xl flex flex-col justify-between p-4 transition-transform transform ${
           isSidebarOpen ? "translate-x-0 z-50" : "-translate-x-full "
-        } md:translate-x-0 w-64 z-40 `}
+        } lg:translate-x-0 w-64 z-40 `}
       >
         {/* Navigation */}
         <nav className="flex flex-col space-y-10 mt-6 flex-grow">

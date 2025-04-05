@@ -60,7 +60,7 @@ const CustomerSideBar = () => {
 
       {/* Sidebar */}
       <div
-        className={`absolute lg:relative top-36 md:top-0 left-0 h-2/6 w-64 bg-[#1F1F1F] text-white rounded-3xl  md:rounded-l-3xl flex flex-col justify-between p-4 transition-transform duration-300  ${
+        className={`absolute lg:relative top-36 lg:top-0 left-0 h-2/6 w-64 bg-[#1F1F1F] text-white rounded-3xl  md:rounded-l-3xl flex flex-col justify-between p-4 transition-transform duration-300  ${
           isOpen ? "translate-x-0 z-50 " : "-translate-x-full lg:translate-x-0"
         } lg:flex lg:h-auto lg:mt-28`}
       >
