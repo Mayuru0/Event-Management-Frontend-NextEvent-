@@ -8,11 +8,15 @@ import { Button } from "@/components/ui/button";
 //import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 //import { Label } from "@/components/ui/label";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faLocationDot, faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+import {
+  faLocationDot,
+  faCalendarDays,
+} from "@fortawesome/free-solid-svg-icons";
 import { Event } from "../../../type/EventType";
+import { createCheckoutSession } from "@/components/Payment/actions";
 
 const ItemInfo: React.FC<Event> = ({
- // _id,
+  // _id,
   title,
   ticket_price,
   description,
@@ -20,7 +24,7 @@ const ItemInfo: React.FC<Event> = ({
   event_type,
   image,
   location,
-  
+
   //popularity,
   quantity,
 }) => {
@@ -31,7 +35,10 @@ const ItemInfo: React.FC<Event> = ({
 
   return (
     <div className="min-h-screen bg-[#121212] text-white">
-      <Link href="../events" className="inline-flex items-center gap-2 p-4 mt-20 text-sm text-gray-400 hover:text-white">
+      <Link
+        href="../events"
+        className="inline-flex items-center gap-2 p-4 mt-20 text-sm text-gray-400 hover:text-white"
+      >
         <ChevronLeft className="w-4 h-4" />
         Back to Event
       </Link>
@@ -39,7 +46,7 @@ const ItemInfo: React.FC<Event> = ({
       <div className="items-center grid lg:grid-cols-2 gap-8 p-4 md:p-8 max-w-7xl mx-auto mt-20">
         <div className="py-4 relative aspect-square rounded-lg overflow-hidden mr-16">
           <Image
-            src={image|| "/placeholder.svg"}
+            src={image || "/placeholder.svg"}
             alt={title}
             fill
             className="object-cover"
@@ -50,7 +57,9 @@ const ItemInfo: React.FC<Event> = ({
               <button
                 key={index}
                 onClick={() => setCurrentSlide(index)}
-                className={`w-2 h-2 rounded-full ${currentSlide === index ? "bg-white" : "bg-white/50"}`}
+                className={`w-2 h-2 rounded-full ${
+                  currentSlide === index ? "bg-white" : "bg-white/50"
+                }`}
               />
             ))}
           </div>
@@ -61,13 +70,21 @@ const ItemInfo: React.FC<Event> = ({
 
           <div className="flex items-center gap-4 text-sm text-gray-400">
             <div className="flex items-center gap-2">
-              <FontAwesomeIcon icon={faLocationDot} className="text-[#03DAC6] text-base" />
+              <FontAwesomeIcon
+                icon={faLocationDot}
+                className="text-[#03DAC6] text-base"
+              />
               <span className="font-bold text-base">{location}</span>
             </div>
 
             <div className="flex items-center gap-2">
-              <FontAwesomeIcon icon={faCalendarDays} className="text-[#03DAC6] text-base" />
-              <span className="font-bold text-base font-raleway">{new Date(date).toLocaleDateString()}</span>
+              <FontAwesomeIcon
+                icon={faCalendarDays}
+                className="text-[#03DAC6] text-base"
+              />
+              <span className="font-bold text-base font-raleway">
+                {new Date(date).toLocaleDateString()}
+              </span>
             </div>
           </div>
 
@@ -80,7 +97,7 @@ const ItemInfo: React.FC<Event> = ({
           <div className="space-y-4">
             <h3 className="font-bold text-lg text-gray-300">Event Type </h3>
             <h3 className="font-bold text-lg text-gray-300">{event_type}</h3>
-            
+
             {/* <RadioGroup defaultValue="vip" className="flex gap-4">
               <div className="flex items-center space-x-2">
                 <RadioGroupItem
@@ -138,13 +155,30 @@ const ItemInfo: React.FC<Event> = ({
                   +
                 </Button>
               </div>
-              <p className="text-sm text-gray-400">{quantity} Tickets Available</p>
+              <p className="text-sm text-gray-400">
+                {quantity} Tickets Available
+              </p>
             </div>
           </div>
-
-          <Button className="w-full bg-[#6200EE] hover:bg-[#5300E8] text-white py-6 rounded-none">
-            Buy Now
-          </Button>
+          <form
+            action={() =>
+              createCheckoutSession({
+                title,
+                ticket_price,
+                description,
+                
+                
+                image: image ?? "/placeholder.svg",
+               
+                quantity
+              })
+            }
+            className="w-full"
+          >
+            <Button className="w-full bg-[#6200EE] hover:bg-[#5300E8] text-white py-6 rounded-none">
+              Buy Now
+            </Button>
+          </form>
         </div>
       </div>
     </div>

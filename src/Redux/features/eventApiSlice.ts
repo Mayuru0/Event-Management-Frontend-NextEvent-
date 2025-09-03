@@ -3,6 +3,7 @@ import { Event, EventResponse } from "@/type/EventType";
 
 export const eventApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    // Create an event
     createEvent: builder.mutation<Event, FormData>({
       query: (formData) => ({
         url: "/event/create",
@@ -11,17 +12,17 @@ export const eventApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Event"],
     }),
-
+    // Get all events
     getAllEvents: builder.query<Event[], void>({
       query: () => "/event/get",
       providesTags: ["Event"],
     }),
-
+    // Get event by id
     getEventById: builder.query<EventResponse, string>({
       query: (eventId) => `/event/get/${eventId}`,
       providesTags: ["Event"],
     }),
-
+   // Update an event
     updateEvent: builder.mutation<Event, { eventId: string; formData: FormData }>({
       query: ({ eventId, formData }) => ({
         url: `/event/update/${eventId}`,
@@ -30,7 +31,7 @@ export const eventApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Event"],
     }),
-
+   // Delete an event
     deleteEvent: builder.mutation<void, string>({
       query: (eventId) => ({
         url: `/event/delete/${eventId}`,
@@ -38,7 +39,7 @@ export const eventApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Event"],
     }),
-
+  // Get events by organizer
     getEventsByOrganizerid: builder.query<Event[], string>({
       query: (organizerId) => `/event/${organizerId}`,
       providesTags: ["Event"],
