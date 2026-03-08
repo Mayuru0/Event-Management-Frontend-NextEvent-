@@ -6,20 +6,17 @@ import Home from "@/components/Home/Home"
 
 const Page = () => {
   return (
-    <main className="min-h-screen">
+    <main className="min-h-screen bg-[#0A0A0F]">
       <section id="home" className="w-full">
         <Home />
       </section>
 
-      <section id="about" className="w-full bg-[#121212]">
+      <section id="about" className="w-full">
         <About />
       </section>
 
-      <section id="event" className="w-full bg-[#121212]">
+      <section id="event" className="w-full">
         <Event />
-      </section>
-
-      <section id="" className="w-full bg-[#121212]">
         <PeopleWhatSay />
       </section>
 
@@ -31,4 +28,3 @@ const Page = () => {
 }
 
 export default Page
-

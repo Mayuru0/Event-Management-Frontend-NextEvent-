@@ -1,19 +1,12 @@
-import React from 'react'
-import EHero1 from './EHero1'
-import EventCard from './EventCard'
-
+import React from "react"
+import EHero1 from "./EHero1"
+import EventCard from "./EventCard"
 
 const Events = () => {
   return (
-    <div className='bg-[#121212] '>
-     <div className=''>
-       <EHero1 />
-     </div>
-     <div className=' '>
-      <EventCard
-      
-      />
-     </div>
+    <div className="bg-[#0A0A0F] min-h-screen">
+      <EHero1 />
+      <EventCard />
     </div>
   )
 }

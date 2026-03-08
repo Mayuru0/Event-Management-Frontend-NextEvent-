@@ -48,6 +48,7 @@ export interface LoginCredentials {
     };
     message?: string;
     token?: string;
+    refreshToken?: string;
     user?: User;
   }
 

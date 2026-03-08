@@ -1,86 +1,134 @@
-import React from 'react';
-import { X, Facebook, Linkedin, Instagram } from 'lucide-react';
+import React from "react"
+import { X, Facebook, Linkedin, Instagram, ArrowRight, Mail } from "lucide-react"
+import DustParticles from "./DustParticles"
+
+const quickLinks = [
+  { href: "home", label: "Home" },
+  { href: "about", label: "About Us" },
+  { href: "event", label: "Events" },
+  { href: "contact", label: "Contact" },
+]
+
+const platformLinks = ["Become an Organizer", "Browse Events", "Support", "Privacy Policy"]
 
 const Footer = () => {
   return (
-    <footer className="bg-[#1F1F1F] text-gray-300 py-8 sm:py-12">
-      <div className="px-4 sm:px-8 md:px-16 lg:px-28 mx-auto">
-        {/* Main Grid Container */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Company Info */}
-          <div className="space-y-4">
-            <h3 className="text-white font-lexend text-xl sm:text-2xl font-semibold mb-4">NextEvent</h3>
+    <footer className="relative bg-[#06060E] text-gray-400 pt-16 pb-8 overflow-hidden">
+      <DustParticles count={35} />
+
+      {/* Top gradient rule */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#6200EE]/55 to-transparent" />
+
+      {/* Decorative orbs */}
+      <div className="absolute bottom-0 left-1/4 w-72 h-72 rounded-full bg-[#6200EE]/5 blur-3xl pointer-events-none" />
+      <div className="absolute top-8 right-1/4 w-56 h-56 rounded-full bg-[#03DAC6]/4 blur-3xl pointer-events-none" />
+
+      <div className="relative z-10 px-6 sm:px-10 md:px-16 lg:px-28 mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-14">
+          {/* Brand */}
+          <div className="space-y-5">
+            <div>
+              <h3 className="text-white text-2xl font-bold tracking-tight">
+                Next
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6200EE] to-[#03DAC6]">
+                  Event
+                </span>
+              </h3>
+              <p className="text-gray-600 text-sm mt-2 leading-relaxed">
+                Sri Lanka&apos;s premier event management platform connecting organizers and attendees.
+              </p>
+            </div>
             <div className="space-y-2">
-              <p className="text-base sm:text-lg text-[#888888] font-kulim">+94 3322 83273</p>
-              <p className="text-base sm:text-lg text-[#888888] font-kulim">nextEvent@hotmail.com</p>
+              <a
+                href="mailto:nextEvent@hotmail.com"
+                className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#03DAC6] transition-colors"
+              >
+                <Mail className="w-4 h-4 flex-shrink-0" />
+                nextEvent@hotmail.com
+              </a>
+              <p className="text-sm text-gray-600 pl-6">+94 3322 83273</p>
             </div>
           </div>
 
           {/* Quick Links */}
           <div className="space-y-4">
-            <h3 className="text-white font-lexend text-xl sm:text-2xl font-bold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li><a href="#home" className="text-base sm:text-lg font-kulim hover:text-white transition-colors text-[#888888]">Home</a></li>
-              <li><a href="#about" className="text-base sm:text-lg font-kulim hover:text-white transition-colors text-[#888888]">About Us</a></li>
+            <h4 className="text-white font-semibold text-xs uppercase tracking-widest">Quick Links</h4>
+            <ul className="space-y-2.5">
+              {quickLinks.map(({ href, label }) => (
+                <li key={href}>
+                  <a
+                    href={`#${href}`}
+                    className="text-gray-500 hover:text-white text-sm transition-colors flex items-center gap-2 group"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-[#6200EE] opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {label}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
-          {/* Additional Links */}
+          {/* Platform */}
           <div className="space-y-4">
-            <ul className="space-y-2 mt-0 sm:mt-10">
-              <li><a href="#event" className="text-base sm:text-lg font-kulim hover:text-white transition-colors text-[#888888]">Events</a></li>
-              <li><a href="#contact" className="text-base sm:text-lg font-kulim hover:text-white transition-colors text-[#888888]">Contact Us</a></li>
+            <h4 className="text-white font-semibold text-xs uppercase tracking-widest">Platform</h4>
+            <ul className="space-y-2.5">
+              {platformLinks.map((item) => (
+                <li key={item}>
+                  <a
+                    href="#"
+                    className="text-gray-500 hover:text-white text-sm transition-colors flex items-center gap-2 group"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-[#03DAC6] opacity-0 group-hover:opacity-100 transition-opacity" />
+                    {item}
+                  </a>
+                </li>
+              ))}
             </ul>
           </div>
 
           {/* Newsletter */}
           <div className="space-y-4">
-            <div className="flex max-w-full sm:max-w-md lg:max-w-full">
+            <h4 className="text-white font-semibold text-xs uppercase tracking-widest">Stay Updated</h4>
+            <p className="text-gray-600 text-sm leading-relaxed">
+              Get the latest events delivered to your inbox.
+            </p>
+            <div className="flex">
               <input
                 type="email"
-                placeholder="Get Event Update"
-                className="w-full px-3 sm:px-4 py-2 bg-transparent border border-gray-600 rounded-l-md focus:outline-none focus:border-purple-500"
+                placeholder="Your email address"
+                className="flex-1 px-4 py-2.5 bg-[#111118] border border-white/8 rounded-l-lg text-sm text-white placeholder:text-gray-600 focus:outline-none focus:border-[#6200EE]/50 transition-colors"
               />
-              <button className="bg-[#6200EE] px-3 sm:px-4 py-2 rounded-r-md hover:bg-purple-700 transition-colors">
-                →
+              <button className="px-4 py-2.5 bg-gradient-to-r from-[#6200EE] to-[#7B2FFF] hover:from-[#7B2FFF] hover:to-[#9040FF] rounded-r-lg transition-all text-white flex-shrink-0">
+                <ArrowRight className="w-4 h-4" />
               </button>
             </div>
           </div>
         </div>
 
-        {/* Bottom Section */}
-        <div className="mt-8 sm:mt-12 pt-6 sm:pt-8 border-t border-gray-400">
-          <div className="flex flex-col space-y-4 sm:space-y-0 sm:flex-row justify-between items-center">
-            {/* Social Links */}
-            <div className="flex space-x-3 sm:space-x-4">
-              <a href="#" className="hover:text-white transition-colors border rounded-full p-1 sm:px-1 sm:py-1">
-                <Facebook size={18} className="sm:w-5 sm:h-5" />
-              </a>
-              <a href="#" className="hover:text-white transition-colors border rounded-full p-1 sm:px-1 sm:py-1">
-                <Linkedin size={18} className="sm:w-5 sm:h-5" />
-              </a>
-              <a href="#" className="hover:text-white transition-colors border rounded-full p-1 sm:px-1 sm:py-1">
-                <Instagram size={18} className="sm:w-5 sm:h-5" />
-              </a>
-              <a href="#" className="hover:text-white transition-colors border rounded-full p-1 sm:px-1 sm:py-1">
-                <X size={18} className="sm:w-5 sm:h-5" />
-              </a>
+        {/* Divider */}
+        <div className="border-t border-white/5 pt-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-5">
+            {/* Social icons */}
+            <div className="flex gap-3">
+              {[Facebook, Linkedin, Instagram, X].map((Icon, i) => (
+                <a
+                  key={i}
+                  href="#"
+                  className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center text-gray-600 hover:text-white hover:border-[#6200EE]/40 hover:bg-[#6200EE]/15 transition-all duration-300"
+                >
+                  <Icon size={13} />
+                </a>
+              ))}
             </div>
 
-            {/* Copyright */}
-            <div className="text-sm sm:text-base text-[#888888] font-kulim text-center sm:text-left">
-              <p>A Product of NextEvent</p>
-            </div>
+            <p className="text-xs text-gray-700">A Product of NextEvent</p>
 
-            {/* All Rights Reserved */}
-            <div className="text-sm sm:text-base text-[#888888] font-kulim text-center sm:text-left">
-              <p>© 2025 NextEvent. All rights reserved</p>
-            </div>
+            <p className="text-xs text-gray-700">© 2025 NextEvent. All rights reserved.</p>
           </div>
         </div>
       </div>
     </footer>
-  );
-};
+  )
+}
 
-export default Footer;
+export default Footer

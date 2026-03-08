@@ -4,21 +4,19 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { MdKeyboardArrowLeft } from "react-icons/md"
+import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react"
 import { useLoginMutation } from "@/Redux/features/authApiSlice"
 import { setCredentials, selectuser } from "@/Redux/features/authSlice"
 import Swal from "sweetalert2"
-import type { User ,LoginResponse } from "@/type/user"
+import type { User, LoginResponse } from "@/type/user"
+import DustParticles from "@/components/common/DustParticles"
 
 export default function SignIn() {
   const [rememberMe, setRememberMe] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
   const router = useRouter()
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  })
+  const [formData, setFormData] = useState({ email: "", password: "" })
   const [errors, setErrors] = useState({ email: "", password: "", rememberMe: "" })
-
   const dispatch = useDispatch()
   const [login, { isLoading }] = useLoginMutation()
   const user = useSelector(selectuser)
@@ -43,9 +41,8 @@ export default function SignIn() {
       isValid = false
     }
 
-    // Add validation for the "Remember me" checkbox (Optional)
     if (!rememberMe) {
-      newErrors.rememberMe = "Please check the 'Remember me' option" // Optional, only if you need this validation
+      newErrors.rememberMe = "Please check the 'Remember me' option"
       isValid = false
     }
 
@@ -57,120 +54,160 @@ export default function SignIn() {
     e.preventDefault()
     if (!validateForm()) return
 
-  try {
-    const response: LoginResponse = await login(formData).unwrap();
-  if (response.user?.status === "verified" && response.token) {
-    dispatch(
-      setCredentials({
-        user: response.user as User,
-        token: response.token as string,
-      }),
-        )
-      } else if (response.data?.user && response.data?.token) {
+    try {
+      const response: LoginResponse = await login(formData).unwrap()
+      if (response.user?.status === "verified" && response.token) {
         dispatch(
           setCredentials({
-            user: response.data.user,
-            token: response.data.token,
-          }),
+            user: response.user as User,
+            token: response.token as string,
+            refreshToken: response.refreshToken,
+          })
         )
+      } else if (response.data?.user && response.data?.token) {
+        dispatch(setCredentials({ user: response.data.user, token: response.data.token }))
       } else {
         throw new Error("Invalid response format from server")
       }
-      Swal.fire({ icon: "success", title: "Success", text: "Login successful" })
-    } catch (err) {
-      console.error("Login error details:", err)
-      Swal.fire({ icon: "warning", title: "Verification Pending", text: "Your account is not verified yet." });
+      Swal.fire({
+        icon: "success",
+        title: "Success",
+        text: "Login successful",
+        background: "#1A1A28",
+        color: "#fff",
+        confirmButtonColor: "#6200EE",
+      })
+    } catch {
+      Swal.fire({
+        icon: "warning",
+        title: "Verification Pending",
+        text: "Your account is not verified yet.",
+        background: "#1A1A28",
+        color: "#fff",
+        confirmButtonColor: "#6200EE",
+      })
     }
   }
 
   useEffect(() => {
-    if (user) {
-      router.push("/")
-    }
+    if (user) router.push("/")
   }, [user, router])
 
   return (
-    <div className="min-h-screen bg-[#121212] p-3 sm:p-4 md:p-6">
-      <button
-        onClick={() => router.push("/")}
-        className="flex items-center text-white text-base sm:text-lg font-medium space-x-2 hover:opacity-80 transition mt-20 sm:mt-12 md:mt-20 px-4 sm:px-8 md:px-16"
-      >
-        <MdKeyboardArrowLeft size={20} />
-        <span>Back to Home</span>
-      </button>
+    <div className="relative min-h-screen bg-[#0A0A0F] flex flex-col overflow-hidden">
+      <DustParticles count={65} />
 
-      <div className="mx-auto max-w-lg px-4 sm:px-6">
-        <div className="rounded-lg bg-[#1F1F1F] border border-zinc-800 p-6 sm:p-8 md:p-12 mt-6 sm:mt-10 md:mt-20">
-          <div className="text-center mb-4 sm:mb-6">
-            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 font-raleway">Welcome Back!</h1>
-            <p className="text-sm sm:text-base font-kulim font-normal text-[#B0B0B0]">
-              Sign in to access your account and continue your journey with us.
-            </p>
+      {/* Decorative orbs */}
+      <div className="absolute top-1/4 left-1/5 w-96 h-96 rounded-full bg-[#6200EE]/12 blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/5 w-80 h-80 rounded-full bg-[#03DAC6]/7 blur-3xl pointer-events-none" />
+
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Back button */}
+        <div className="p-6 pt-24 sm:pt-20">
+          <button
+            onClick={() => router.push("/")}
+            className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm group"
+          >
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            Back to Home
+          </button>
+        </div>
+
+        {/* Card */}
+        <div className="flex-1 flex items-center justify-center px-4 py-8">
+          <div className="w-full max-w-md">
+            {/* Brand */}
+            <div className="text-center mb-8">
+              <h1 className="text-3xl font-bold text-white">
+                Next
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#6200EE] to-[#03DAC6]">
+                  Event
+                </span>
+              </h1>
+              <p className="text-gray-500 text-sm mt-2">Welcome back! Sign in to continue.</p>
+            </div>
+
+            <div className="bg-[#111118] border border-white/8 rounded-2xl p-6 sm:p-8 shadow-2xl">
+              <h2 className="text-xl font-bold text-white mb-1">Sign In</h2>
+              <p className="text-gray-500 text-sm mb-6">Access your account and continue your journey.</p>
+
+              <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Email */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Email Address</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+                    <input
+                      type="email"
+                      placeholder="john@example.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full pl-10 pr-4 py-2.5 bg-[#1A1A28] border border-white/8 rounded-lg text-white text-sm placeholder:text-gray-600 focus:outline-none focus:border-[#6200EE]/50 focus:ring-1 focus:ring-[#6200EE]/25 transition-colors"
+                    />
+                  </div>
+                  {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
+                </div>
+
+                {/* Password */}
+                <div>
+                  <label className="block text-xs font-medium text-gray-400 mb-1.5">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-600" />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      className="w-full pl-10 pr-10 py-2.5 bg-[#1A1A28] border border-white/8 rounded-lg text-white text-sm placeholder:text-gray-600 focus:outline-none focus:border-[#6200EE]/50 focus:ring-1 focus:ring-[#6200EE]/25 transition-colors"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-600 hover:text-gray-400 transition-colors"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password}</p>}
+                </div>
+
+                {/* Remember me & forgot */}
+                <div className="flex items-center justify-between">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={rememberMe}
+                      onChange={(e) => setRememberMe(e.target.checked)}
+                      className="w-4 h-4 accent-violet-600 rounded"
+                    />
+                    <span className="text-xs text-gray-400">Remember me</span>
+                  </label>
+                  <Link href="/forgot-password" className="text-xs text-[#6200EE] hover:text-[#03DAC6] transition-colors">
+                    Forgot password?
+                  </Link>
+                </div>
+                {errors.rememberMe && <p className="text-red-400 text-xs">{errors.rememberMe}</p>}
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  disabled={isLoading}
+                  className="w-full bg-gradient-to-r from-[#6200EE] to-[#7B2FFF] hover:from-[#7B2FFF] hover:to-[#9040FF] text-white py-3 rounded-lg font-semibold transition-all duration-300 shadow-lg shadow-purple-900/30 disabled:opacity-60 disabled:cursor-not-allowed mt-2"
+                >
+                  {isLoading ? "Signing in..." : "Sign In"}
+                </button>
+
+                <p className="text-center text-xs text-gray-500 mt-3">
+                  Don&apos;t have an account?{" "}
+                  <Link href="/auth/signup" className="text-[#6200EE] hover:text-[#03DAC6] transition-colors font-medium">
+                    Sign up
+                  </Link>
+                </p>
+              </form>
+            </div>
           </div>
-
-          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6 md:space-y-8">
-            <div>
-              <input
-                type="email"
-                placeholder="Email Address"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-white text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-transparent"
-                required
-              />
-              {errors.email && <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.email}</p>}
-            </div>
-
-            <div>
-              <input
-                type="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded-md text-white text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-violet-600 focus:border-transparent"
-                required
-              />
-              {errors.password && <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.password}</p>}
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
-              <div className="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="remember"
-                  checked={rememberMe}
-                  onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 accent-violet-600"
-                />
-                <label htmlFor="remember" className="text-xs sm:text-sm text-gray-400">
-                  Remember me
-                </label>
-                {errors.rememberMe && <p className="text-red-500 text-xs sm:text-sm ml-2">{errors.rememberMe}</p>}
-              </div>
-
-              <Link href="/forgot-password" className="text-xs sm:text-sm text-blue-500 hover:underline">
-                Forgot password?
-              </Link>
-            </div>
-
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-[#6200EE] hover:bg-violet-700 text-white py-2 px-4 rounded-md transition-colors duration-200 text-sm sm:text-base mt-4"
-            >
-              {isLoading ? "Signing in..." : "Sign in"}
-            </button>
-
-            <div className="text-center text-xs sm:text-sm mt-4">
-              <span className="text-gray-400">Don&apos;t have an account? </span>
-              <Link href="/auth/signup" className="text-blue-500 hover:underline">
-                Sign up
-              </Link>
-            </div>
-          </form>
         </div>
       </div>
     </div>
   )
 }
-
