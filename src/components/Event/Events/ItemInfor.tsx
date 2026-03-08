@@ -1,22 +1,14 @@
 "use client";
 
-import { ChevronLeft } from "lucide-react";
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-//import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-//import { Label } from "@/components/ui/label";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faLocationDot,
-  faCalendarDays,
-} from "@fortawesome/free-solid-svg-icons";
+import { ChevronLeft, MapPin, Calendar, Tag, Users, Minus, Plus, Clock } from "lucide-react";
 import { Event } from "../../../type/EventType";
-import { createCheckoutSession } from "@/components/Payment/actions";
+import BookingModal from "./BookingModal";
 
 const ItemInfo: React.FC<Event> = ({
-  // _id,
+  _id,
   title,
   ticket_price,
   description,
@@ -24,163 +16,205 @@ const ItemInfo: React.FC<Event> = ({
   event_type,
   image,
   location,
-
-  //popularity,
+  organizerid,
+  popularity,
   quantity,
+  status,
 }) => {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [quantitySelected, setQuantity] = useState(1);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [previewQty, setPreviewQty] = useState(1);
 
-  const images = [image]; // assuming `image` is passed as a prop
+  const isSoldOut = quantity === 0;
+  const isUpcoming = new Date(date) > new Date();
 
   return (
-    <div className="min-h-screen bg-[#121212] text-white">
-      <Link
-        href="../events"
-        className="inline-flex items-center gap-2 p-4 mt-20 text-sm text-gray-400 hover:text-white"
-      >
-        <ChevronLeft className="w-4 h-4" />
-        Back to Event
-      </Link>
+    <div className="min-h-screen bg-[#0E0E0E] text-white">
+      {/* Back button */}
+      <div className="pt-24 px-4 md:px-8 max-w-7xl mx-auto">
+        <Link
+          href="/events"
+          className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-white transition-colors group"
+        >
+          <ChevronLeft className="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" />
+          Back to Events
+        </Link>
+      </div>
 
-      <div className="items-center grid lg:grid-cols-2 gap-8 p-4 md:p-8 max-w-7xl mx-auto mt-20">
-        <div className="py-4 relative aspect-square rounded-lg overflow-hidden mr-16">
-          <Image
-            src={image || "/placeholder.svg"}
-            alt={title}
-            fill
-            className="object-cover"
-          />
-
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
-            {images.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentSlide(index)}
-                className={`w-2 h-2 rounded-full ${
-                  currentSlide === index ? "bg-white" : "bg-white/50"
-                }`}
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-8">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-16 items-start">
+          {/* Left — Image */}
+          <div className="relative">
+            <div className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#1A1A1A]">
+              <Image
+                src={image || "/placeholder.svg"}
+                alt={title}
+                fill
+                className="object-cover"
+                priority
               />
-            ))}
-          </div>
-        </div>
-
-        <div className="space-y-6 ml-16">
-          <h1 className="font-raleway text-5xl font-semibold">{title}</h1>
-
-          <div className="flex items-center gap-4 text-sm text-gray-400">
-            <div className="flex items-center gap-2">
-              <FontAwesomeIcon
-                icon={faLocationDot}
-                className="text-[#03DAC6] text-base"
-              />
-              <span className="font-bold text-base">{location}</span>
+              {/* Status badge */}
+              <div className="absolute top-4 left-4">
+                {isSoldOut ? (
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-500/90 text-white backdrop-blur-sm">
+                    Sold Out
+                  </span>
+                ) : isUpcoming ? (
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-[#00FFC2]/90 text-black backdrop-blur-sm">
+                    Available
+                  </span>
+                ) : (
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-gray-500/90 text-white backdrop-blur-sm">
+                    Ended
+                  </span>
+                )}
+              </div>
             </div>
 
-            <div className="flex items-center gap-2">
-              <FontAwesomeIcon
-                icon={faCalendarDays}
-                className="text-[#03DAC6] text-base"
-              />
-              <span className="font-bold text-base font-raleway">
-                {new Date(date).toLocaleDateString()}
+            {/* Quick stats below image */}
+            <div className="mt-4 grid grid-cols-3 gap-3">
+              <div className="p-3 rounded-xl bg-[#1A1A1A] border border-white/5 text-center">
+                <p className="text-xs text-gray-500 mb-1">Type</p>
+                <p className="text-sm font-semibold text-white truncate">{event_type}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-[#1A1A1A] border border-white/5 text-center">
+                <p className="text-xs text-gray-500 mb-1">Available</p>
+                <p className="text-sm font-semibold text-white">{quantity}</p>
+              </div>
+              <div className="p-3 rounded-xl bg-[#1A1A1A] border border-white/5 text-center">
+                <p className="text-xs text-gray-500 mb-1">Popularity</p>
+                <p className="text-sm font-semibold text-white">{popularity ?? "—"}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Right — Details */}
+          <div className="space-y-6">
+            {/* Type badge + title */}
+            <div>
+              <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#6200EE] bg-[#6200EE]/10 border border-[#6200EE]/20 px-2.5 py-1 rounded-full mb-3">
+                <Tag className="w-3 h-3" />
+                {event_type}
               </span>
-            </div>
-          </div>
-
-          <p className="text-gray-400 leading-relaxed font-light text-lg font-kulim">
-            {description}
-          </p>
-
-          <hr />
-
-          <div className="space-y-4">
-            <h3 className="font-bold text-lg text-gray-300">Event Type </h3>
-            <h3 className="font-bold text-lg text-gray-300">{event_type}</h3>
-
-            {/* <RadioGroup defaultValue="vip" className="flex gap-4">
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value="vip"
-                  id="vip"
-                  className="appearance-none w-5 h-5 border border-white rounded-full flex items-center justify-center checked:bg-white"
-                >
-                  <div className="w-2.5 h-2.5 bg-black rounded-full"></div>
-                </RadioGroupItem>
-                <Label htmlFor="vip" className="text-white font-medium">
-                  VIP
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2">
-                <RadioGroupItem
-                  value="regular"
-                  id="regular"
-                  className="appearance-none w-5 h-5 border border-white rounded-full flex items-center justify-center checked:bg-white"
-                >
-                  <div className="w-2.5 h-2.5 bg-black rounded-full"></div>
-                </RadioGroupItem>
-                <Label htmlFor="regular" className="text-white font-medium">
-                  Regular
-                </Label>
-              </div>
-            </RadioGroup> */}
-          </div>
-
-          <hr className="border-gray-700 my-4" />
-
-          <div className="flex items-end justify-between">
-            <div className="flex flex-col">
-              <p className="text-2xl font-bold text-white">${ticket_price}</p>
+              <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight">{title}</h1>
             </div>
 
-            <div className="flex items-center gap-4">
-              <div className="flex items-center border border-white">
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setQuantity(Math.max(1, quantitySelected - 1))}
-                  className="bg-white text-black font-extrabold px-4 py-2 rounded-none"
-                >
-                  -
-                </Button>
-                <span className="w-12 text-center bg-black text-white font-normal text-lg py-0">
-                  {quantitySelected.toString().padStart(2, "0")}
-                </span>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  onClick={() => setQuantity(quantitySelected + 1)}
-                  className="bg-white text-black font-extrabold px-4 py-2 rounded-none"
-                >
-                  +
-                </Button>
+            {/* Meta info */}
+            <div className="flex flex-wrap gap-4">
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <div className="w-7 h-7 rounded-lg bg-[#1A1A1A] border border-white/8 flex items-center justify-center">
+                  <MapPin className="w-3.5 h-3.5 text-[#03DAC6]" />
+                </div>
+                {location}
               </div>
-              <p className="text-sm text-gray-400">
-                {quantity} Tickets Available
-              </p>
+              <div className="flex items-center gap-2 text-sm text-gray-400">
+                <div className="w-7 h-7 rounded-lg bg-[#1A1A1A] border border-white/8 flex items-center justify-center">
+                  <Calendar className="w-3.5 h-3.5 text-[#03DAC6]" />
+                </div>
+                {new Date(date).toLocaleDateString("en-US", {
+                  weekday: "short",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
+              </div>
+              {isUpcoming && (
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <div className="w-7 h-7 rounded-lg bg-[#1A1A1A] border border-white/8 flex items-center justify-center">
+                    <Clock className="w-3.5 h-3.5 text-[#03DAC6]" />
+                  </div>
+                  {new Date(date).toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}
+                </div>
+              )}
+            </div>
+
+            {/* Description */}
+            <div>
+              <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider mb-2">About This Event</h3>
+              <p className="text-gray-400 leading-relaxed text-sm">{description}</p>
+            </div>
+
+            <div className="h-px bg-white/5" />
+
+            {/* Quantity selector */}
+            <div>
+              <h3 className="text-xs font-bold text-gray-600 uppercase tracking-wider mb-3">Select Quantity</h3>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 p-1 rounded-xl bg-[#1A1A1A] border border-white/8">
+                  <button
+                    onClick={() => setPreviewQty(Math.max(1, previewQty - 1))}
+                    disabled={previewQty <= 1}
+                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#242424] text-white hover:bg-[#2e2e2e] disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span className="w-10 text-center font-bold text-lg text-white">{previewQty}</span>
+                  <button
+                    onClick={() => setPreviewQty(Math.min(quantity, previewQty + 1))}
+                    disabled={previewQty >= quantity || isSoldOut}
+                    className="w-9 h-9 flex items-center justify-center rounded-lg bg-[#6200EE]/20 border border-[#6200EE]/30 text-[#6200EE] hover:bg-[#6200EE]/30 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-1.5 text-sm text-gray-500">
+                  <Users className="w-4 h-4" />
+                  {quantity} tickets left
+                </div>
+              </div>
+            </div>
+
+            {/* Price + CTA */}
+            <div className="p-5 rounded-2xl bg-[#1A1A1A] border border-white/8">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <p className="text-xs text-gray-500 mb-0.5">Price per ticket</p>
+                  <p className="text-3xl font-bold text-white">${ticket_price.toFixed(2)}</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-xs text-gray-500 mb-0.5">Subtotal ({previewQty})</p>
+                  <p className="text-xl font-bold text-[#00FFC2]">
+                    ${(ticket_price * previewQty).toFixed(2)}
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                disabled={isSoldOut || !isUpcoming}
+                className="w-full py-4 rounded-xl font-bold text-sm transition-all disabled:opacity-40 disabled:cursor-not-allowed
+                  bg-[#6200EE] hover:bg-[#5300D8] active:scale-[0.98] text-white shadow-lg shadow-[#6200EE]/20"
+              >
+                {isSoldOut
+                  ? "Sold Out"
+                  : !isUpcoming
+                  ? "Event Ended"
+                  : "Book Now"}
+              </button>
+              {!isSoldOut && isUpcoming && (
+                <p className="text-center text-xs text-gray-600 mt-2.5">
+                  Secure checkout · Instant confirmation
+                </p>
+              )}
             </div>
           </div>
-          <form
-            action={() =>
-              createCheckoutSession({
-                title,
-                ticket_price,
-                description,
-                
-                
-                image: image ?? "/placeholder.svg",
-               
-                quantity
-              })
-            }
-            className="w-full"
-          >
-            <Button className="w-full bg-[#6200EE] hover:bg-[#5300E8] text-white py-6 rounded-none">
-              Buy Now
-            </Button>
-          </form>
         </div>
       </div>
+
+      {/* Booking Modal */}
+      <BookingModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        event={{
+          _id,
+          title,
+          ticket_price,
+          date,
+          location,
+          event_type,
+          quantity,
+          image,
+          organizerid,
+        }}
+      />
     </div>
   );
 };

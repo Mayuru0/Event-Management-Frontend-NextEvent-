@@ -106,7 +106,7 @@ export default function OrganizerProfile() {
           const { token: newToken, ...updatedUser } = response.data;
           dispatch(
             setCredentials({
-              user: updatedUser as any,
+              user: updatedUser ,
               token: newToken,
               ...(refreshToken ? { refreshToken } : {}),
             })

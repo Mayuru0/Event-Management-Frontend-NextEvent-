@@ -1,5 +1,5 @@
 import { apiSlice } from "../apiSlice";
-import { TicketType, OrganizerStats } from "../../type/TicketType";
+import { TicketType, OrganizerStats, CheckoutSessionRequest } from "../../type/TicketType";
 
 export const ticketApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,7 +8,7 @@ export const ticketApiSlice = apiSlice.injectEndpoints({
       providesTags: ["Ticket"],
     }),
 
-    createTicket: builder.mutation<TicketType, Partial<TicketType>>({
+    createTicket: builder.mutation<{ success: boolean; data: TicketType }, Partial<TicketType>>({
       query: (ticket) => ({
         url: "/ticket/add",
         method: "POST",
@@ -17,7 +17,6 @@ export const ticketApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Ticket"],
     }),
 
-    // Fixed: was /ticket/:userId (conflicted with /:ticketId), now /ticket/user/:userId
     getTicketsUserId: builder.query<TicketType[], string>({
       query: (userId) => `/ticket/user/${userId}`,
       providesTags: ["Ticket"],
@@ -50,13 +49,12 @@ export const ticketApiSlice = apiSlice.injectEndpoints({
       invalidatesTags: ["Ticket"],
     }),
 
-    createCheckoutSession: builder.mutation<{ url: string }, Partial<TicketType>>({
-      query: (ticket) => ({
+    createCheckoutSession: builder.mutation<{ url: string }, CheckoutSessionRequest>({
+      query: (data) => ({
         url: "/ticket/create-checkout-session",
         method: "POST",
-        body: ticket,
+        body: data,
       }),
-      invalidatesTags: ["Ticket"],
     }),
   }),
 });
