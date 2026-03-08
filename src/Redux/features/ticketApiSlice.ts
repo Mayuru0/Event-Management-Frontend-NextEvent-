@@ -1,40 +1,73 @@
 import { apiSlice } from "../apiSlice";
-import {TicketType} from "../../type/TicketType";
+import { TicketType, OrganizerStats } from "../../type/TicketType";
 
 export const ticketApiSlice = apiSlice.injectEndpoints({
-    endpoints: (builder) => ({
-        getTickets: builder.query<TicketType[], void>({
-            query: () => "/ticket/get",
-            providesTags: ["Ticket"],
-        }),
-        createTicket: builder.mutation<TicketType, TicketType>({
-            query: (ticket) => ({
-                url: "/ticket/add",
-                method: "POST",
-                body: ticket,
-            }),
-            invalidatesTags: ["Ticket"],
-        }),
+  endpoints: (builder) => ({
+    getTickets: builder.query<TicketType[], void>({
+      query: () => "/ticket/get",
+      providesTags: ["Ticket"],
+    }),
 
-        getTicketsUserId: builder.query<TicketType[], string>({
-            query: (userId) => `/ticket/${userId}`,
-            providesTags: ["Ticket"],
-        }),
+    createTicket: builder.mutation<TicketType, Partial<TicketType>>({
+      query: (ticket) => ({
+        url: "/ticket/add",
+        method: "POST",
+        body: ticket,
+      }),
+      invalidatesTags: ["Ticket"],
+    }),
 
+    // Fixed: was /ticket/:userId (conflicted with /:ticketId), now /ticket/user/:userId
+    getTicketsUserId: builder.query<TicketType[], string>({
+      query: (userId) => `/ticket/user/${userId}`,
+      providesTags: ["Ticket"],
+    }),
 
-        getTicketsorganizerId: builder.query<TicketType[], string>({
-            query: (organizerId) => `/ticket/customer/${organizerId}`,
-            providesTags: ["Ticket"],
-        }),
-        createCheckoutSession: builder.mutation<TicketType, TicketType>({  
-            query: (ticket) => ({
-              url: "/ticket/create-checkout-session",
-              method: "POST",
-              body: ticket,
-            }),
-            invalidatesTags: ["Ticket"],
-          }),
-        }),
+    getTicketsorganizerId: builder.query<TicketType[], string>({
+      query: (organizerId) => `/ticket/customer/${organizerId}`,
+      providesTags: ["Ticket"],
+    }),
+
+    getOrganizerStats: builder.query<{ success: boolean; data: OrganizerStats }, string>({
+      query: (organizerId) => `/ticket/stats/${organizerId}`,
+      providesTags: ["Ticket"],
+    }),
+
+    updateTicket: builder.mutation<TicketType, { ticketId: string; body: Partial<TicketType> }>({
+      query: ({ ticketId, body }) => ({
+        url: `/ticket/${ticketId}`,
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["Ticket"],
+    }),
+
+    deleteTicket: builder.mutation<{ message: string }, string>({
+      query: (ticketId) => ({
+        url: `/ticket/delete/${ticketId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Ticket"],
+    }),
+
+    createCheckoutSession: builder.mutation<{ url: string }, Partial<TicketType>>({
+      query: (ticket) => ({
+        url: "/ticket/create-checkout-session",
+        method: "POST",
+        body: ticket,
+      }),
+      invalidatesTags: ["Ticket"],
+    }),
+  }),
 });
 
-export const { useGetTicketsQuery, useCreateTicketMutation, useGetTicketsUserIdQuery, useGetTicketsorganizerIdQuery ,useCreateCheckoutSessionMutation } = ticketApiSlice;
+export const {
+  useGetTicketsQuery,
+  useCreateTicketMutation,
+  useGetTicketsUserIdQuery,
+  useGetTicketsorganizerIdQuery,
+  useGetOrganizerStatsQuery,
+  useUpdateTicketMutation,
+  useDeleteTicketMutation,
+  useCreateCheckoutSessionMutation,
+} = ticketApiSlice;
