@@ -10,7 +10,7 @@ import { selectuser } from "@/Redux/features/authSlice"
 import { useRouter } from "next/navigation"
 import DustParticles from "@/components/common/DustParticles"
 import { Calendar, MapPin, ArrowRight, Sparkles } from "lucide-react"
-import PeopleWhatSay from "./people_what_say"
+
 
 const averiaGruesaLibre = Averia_Gruesa_Libre({ subsets: ["latin"], weight: ["400"] })
 
