@@ -4,8 +4,8 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Pencil, Camera } from "lucide-react";
-import { useSelector } from "react-redux";
-import { selectuser } from "@/Redux/features/authSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectuser, setCredentials, selectRefreshToken } from "@/Redux/features/authSlice";
 import { useUpdateUserMutation } from "@/Redux/features/authApiSlice";
 import Swal from "sweetalert2";
 
@@ -24,6 +24,8 @@ interface User {
 
 export default function ProfilePage() {
   const user = useSelector(selectuser) as User;
+  const refreshToken = useSelector(selectRefreshToken);
+  const dispatch = useDispatch();
   const [profile, setProfile] = useState<User>(user);
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -71,7 +73,20 @@ export default function ProfilePage() {
       }
 
       try {
-        await update({ UserId: user._id, formData }).unwrap();
+        const response = await update({ UserId: user._id, formData }).unwrap();
+
+        // Update Redux state with fresh user data and new access token
+        if (response.success && response.data) {
+          const { token: newToken, ...updatedUser } = response.data;
+          dispatch(
+            setCredentials({
+              user: updatedUser as any,
+              token: newToken,
+              ...(refreshToken ? { refreshToken } : {}),
+            })
+          );
+        }
+
         Swal.fire({
           title: "Profile Updated!",
           text: "Your profile has been updated successfully.",
@@ -114,38 +129,37 @@ export default function ProfilePage() {
 
         {/* Profile Picture */}
         <div className="flex justify-center md:justify-start mb-6 md:mb-8">
-  <div
-    className="relative w-20 h-20 md:w-24 md:h-24 group cursor-pointer"
-    onClick={handleImageClick}
-  >
-    <Image
-      src={
-        user?.profilePic && user?.profilePic.startsWith("http")
-          ? user.profilePic
-          : "/default-profile.png"
-      }
-      alt={user?.name || "Image"}
-      className="rounded-full"
-      width={96}
-      height={96}
-      style={{ objectFit: "cover" }}
-      priority
-    />
-    {isEditing && (
-      <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-        <Camera className="w-8 h-8 text-white" />
-      </div>
-    )}
-  </div>
-  <input
-    type="file"
-    ref={fileInputRef}
-    onChange={handleImageChange}
-    accept="image/*"
-    className="hidden"
-  />
-</div>
-
+          <div
+            className="relative w-20 h-20 md:w-24 md:h-24 group cursor-pointer"
+            onClick={handleImageClick}
+          >
+            <Image
+              src={
+                user?.profilePic && user?.profilePic.startsWith("http")
+                  ? user.profilePic
+                  : "/default-profile.png"
+              }
+              alt={user?.name || "Image"}
+              className="rounded-full"
+              width={96}
+              height={96}
+              style={{ objectFit: "cover" }}
+              priority
+            />
+            {isEditing && (
+              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                <Camera className="w-8 h-8 text-white" />
+              </div>
+            )}
+          </div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleImageChange}
+            accept="image/*"
+            className="hidden"
+          />
+        </div>
 
         {/* Personal Information */}
         <div className="space-y-6">

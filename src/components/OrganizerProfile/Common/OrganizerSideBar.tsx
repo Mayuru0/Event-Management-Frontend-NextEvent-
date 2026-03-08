@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { logout } from "@/Redux/features/authSlice";
-import { useDispatch } from "react-redux";
+import { logout, selectRefreshToken } from "@/Redux/features/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useLogoutUserMutation } from "@/Redux/features/authApiSlice";
 import { FiMenu, FiX } from "react-icons/fi"; // Icons for toggle button
 
 interface SideBar {
@@ -21,9 +22,11 @@ const sideBarLinks: SideBar[] = [
 
 const OrganizerSideBar = () => {
   const router = useRouter();
-  const pathname = usePathname() || "/profile/organizer/my-profile"; 
+  const pathname = usePathname() || "/profile/organizer/my-profile";
   const dispatch = useDispatch();
-  const [isClient, setIsClient] = useState(false); 
+  const refreshToken = useSelector(selectRefreshToken);
+  const [logoutUser] = useLogoutUserMutation();
+  const [isClient, setIsClient] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar state
 
   useEffect(() => {
@@ -41,7 +44,14 @@ const OrganizerSideBar = () => {
     setIsSidebarOpen(false); // Close sidebar on mobile after clicking a link
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (refreshToken) {
+      try {
+        await logoutUser({ refreshToken }).unwrap();
+      } catch {
+        // proceed with local logout even if server call fails
+      }
+    }
     dispatch(logout());
     router.push("/");
   };

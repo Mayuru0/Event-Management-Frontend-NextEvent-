@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { logout } from "@/Redux/features/authSlice";
-import { useDispatch } from "react-redux";
+import { logout, selectRefreshToken } from "@/Redux/features/authSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useLogoutUserMutation } from "@/Redux/features/authApiSlice";
 import { Menu } from "lucide-react"; // Import an icon for mobile menu toggle
 
 interface SideBar {
@@ -19,8 +20,10 @@ const sideBarLinks: SideBar[] = [
 
 const CustomerSideBar = () => {
   const router = useRouter();
-  const pathname = usePathname() || "/profile/customer/my-profile"; 
+  const pathname = usePathname() || "/profile/customer/my-profile";
   const dispatch = useDispatch();
+  const refreshToken = useSelector(selectRefreshToken);
+  const [logoutUser] = useLogoutUserMutation();
   const [isClient, setIsClient] = useState(false);
   const [isOpen, setIsOpen] = useState(false); // For mobile sidebar toggle
 
@@ -39,7 +42,14 @@ const CustomerSideBar = () => {
     setIsOpen(false); // Close menu on mobile after clicking a link
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (refreshToken) {
+      try {
+        await logoutUser({ refreshToken }).unwrap();
+      } catch {
+        // proceed with local logout even if server call fails
+      }
+    }
     dispatch(logout());
     router.push("/");
   };

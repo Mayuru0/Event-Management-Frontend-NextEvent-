@@ -6,7 +6,8 @@ import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
-import { selectuser, logout } from "@/Redux/features/authSlice";
+import { selectuser, logout, selectRefreshToken } from "@/Redux/features/authSlice";
+import { useLogoutUserMutation } from "@/Redux/features/authApiSlice";
 
 interface NavLink {
   href: string;
@@ -19,7 +20,9 @@ const Header = () => {
   const [activeSection, setActiveSection] = useState("home");
   const router = useRouter();
   const user = useSelector(selectuser);
+  const refreshToken = useSelector(selectRefreshToken);
   const dispatch = useDispatch();
+  const [logoutUser] = useLogoutUserMutation();
   const [isClient, setIsClient] = useState(false);
   const navigationLinks: NavLink[] = [
     { href: "home", label: "Home" },
@@ -71,7 +74,14 @@ const Header = () => {
     setIsClient(true); // Set to true when client-side render is complete
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    if (refreshToken) {
+      try {
+        await logoutUser({ refreshToken }).unwrap();
+      } catch {
+        // proceed with local logout even if server call fails
+      }
+    }
     dispatch(logout());
     router.push("/");
   };

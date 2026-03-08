@@ -3,52 +3,45 @@
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { Pencil, Camera, Check } from "lucide-react";
-import { useSelector } from "react-redux";
-import { selectuser } from "@/Redux/features/authSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { selectuser, setCredentials, selectRefreshToken } from "@/Redux/features/authSlice";
 import { useUpdateUserMutation } from "@/Redux/features/authApiSlice";
 import Swal from "sweetalert2";
+
 interface User {
   _id: string;
   name: string;
-     nic: string;
-     email: string;
-     gender: string;
-     address: string;
-     contactNumber: string;
-     PostalCode: string;
-     profilePic: string;
-     role: string;
-     isLoggedIn: boolean;
-     type: string;
-     isVerified: boolean;
+  nic: string;
+  email: string;
+  gender: string;
+  address: string;
+  contactNumber: string;
+  PostalCode: string;
+  profilePic: string;
+  role: string;
+  isLoggedIn: boolean;
+  type: string;
+  isVerified: boolean;
 }
 
 export default function OrganizerProfile() {
   const user = useSelector(selectuser) as User;
+  const refreshToken = useSelector(selectRefreshToken);
+  const dispatch = useDispatch();
   const [profile, setProfile] = useState<User>(user);
   const [isEditing, setIsEditing] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
   const [update] = useUpdateUserMutation();
   const [isMounted, setIsMounted] = useState(false);
 
+  useEffect(() => {
+    setIsMounted(true);
+    setProfile(user);
+  }, [user]);
 
+  if (!isMounted || !profile) return <div>Loading...</div>;
+  if (!user) return <div>Loading...</div>;
 
-// Ensure component only renders after client has mounted
-useEffect(() => {
-  setIsMounted(true);
-  setProfile(user);
-}, [user]);
-
-if (!isMounted || !profile) {
-  return <div>Loading...</div>;
-}
-
-
-if (!user) {
-  // Handle the case where user is not available, e.g., show a loading spinner or redirect to login page.
-  return <div>Loading...</div>;
-}
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
@@ -56,89 +49,67 @@ if (!user) {
     setProfile((prev) => ({ ...prev, [name]: value }));
   };
 
-
-
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (file) {
-    // Display the preview of the selected image
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setProfile((prev) => ({
-        ...prev,
-        profilePic: reader.result as string, // Store the preview in state
-      }));
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
-const handleUpdate = async () => {
-  if (isEditing) {
-    const formData = new FormData();
-    
-    // Add form fields to the FormData object
-    Object.entries(profile).forEach(([key, value]) => {
-      if (value) {
-        formData.append(key, value as string);
-      }
-    });
-
-    // Append the profile picture if it's updated
-    const imageFile = fileInputRef.current?.files?.[0];
-    if (imageFile) {
-      formData.append("profilePic", imageFile);
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfile((prev) => ({
+          ...prev,
+          profilePic: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
     }
-
-    try {
-      // Update user profile by calling the mutation
-      await update({ UserId: user._id, formData }).unwrap();
-      console.log("Profile updated successfully");
-      
-      // Show SweetAlert success message after successful update
-      Swal.fire({
-        title: "Profile Updated!",
-        text: "Your profile has been updated successfully.",
-        icon: "success",
-        confirmButtonText: "OK",
-      });
-    } catch (error) {
-      console.error("Failed to update profile:", error);
-      
-      // Show SweetAlert error message if something goes wrong
-      Swal.fire({
-        title: "Update Failed!",
-        text: "There was an error updating your profile.",
-        icon: "error",
-        confirmButtonText: "Try Again",
-      });
-    }
-  }
-
-  // Toggle editing state after the operation
-  setIsEditing(!isEditing);
-};
-
-  
-  
-
-  const handleImageClick = () => {
-    fileInputRef.current?.click();
   };
 
-  // const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const file = e.target.files?.[0];
-  //   if (file) {
-  //     const reader = new FileReader();
-  //     reader.onloadend = () => {
-  //       setProfile((prev) => ({
-  //         ...prev,
-  //         profilePicture: reader.result as string,
-  //       }));
-  //     };
-  //     reader.readAsDataURL(file);
-  //   }
-  // };
+  const handleUpdate = async () => {
+    if (isEditing) {
+      const formData = new FormData();
+      Object.entries(profile).forEach(([key, value]) => {
+        if (value) formData.append(key, value as string);
+      });
+
+      const imageFile = fileInputRef.current?.files?.[0];
+      if (imageFile) {
+        formData.append("profilePic", imageFile);
+      }
+
+      try {
+        const response = await update({ UserId: user._id, formData }).unwrap();
+
+        // Update Redux state with fresh user data and new access token
+        if (response.success && response.data) {
+          const { token: newToken, ...updatedUser } = response.data;
+          dispatch(
+            setCredentials({
+              user: updatedUser as any,
+              token: newToken,
+              ...(refreshToken ? { refreshToken } : {}),
+            })
+          );
+        }
+
+        Swal.fire({
+          title: "Profile Updated!",
+          text: "Your profile has been updated successfully.",
+          icon: "success",
+          confirmButtonText: "OK",
+        });
+      } catch (error) {
+        console.error("Failed to update profile:", error);
+        Swal.fire({
+          title: "Update Failed!",
+          text: "There was an error updating your profile.",
+          icon: "error",
+          confirmButtonText: "Try Again",
+        });
+      }
+    }
+    setIsEditing(!isEditing);
+  };
+
+  const handleImageClick = () => fileInputRef.current?.click();
 
   return (
     <div className="bg-[#1F1F1F] rounded-3xl md:rounded-r-3xl mt-28">
@@ -163,13 +134,12 @@ const handleUpdate = async () => {
           <div className="relative w-24 h-24 group" onClick={handleImageClick}>
             <div className="absolute inset-0 rounded-full border-2 border-[#00FFC2]">
               <Image
-                
-                  src={
-                    user?.profilePic && user?.profilePic.startsWith("http")
-                      ? user.profilePic
-                      : "/default-profile.png"
-                  }
-                alt={user?.name || " Image"}
+                src={
+                  user?.profilePic && user?.profilePic.startsWith("http")
+                    ? user.profilePic
+                    : "/default-profile.png"
+                }
+                alt={user?.name || "Image"}
                 className="rounded-full"
                 fill
                 style={{ objectFit: "cover" }}

@@ -64,6 +64,7 @@ export default function SignIn() {
       setCredentials({
         user: response.user as User,
         token: response.token as string,
+        refreshToken: response.refreshToken,
       }),
         )
       } else if (response.data?.user && response.data?.token) {
