@@ -1,5 +1,5 @@
 import { apiSlice } from "../apiSlice"
-import type { User, LoginCredentials, RegisterCredentials } from "@/type/user"
+import type { User, LoginCredentials } from "@/type/user"
 
 interface LoginResponse {
   success: boolean
@@ -22,12 +22,14 @@ interface RefreshTokenResponse {
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    register: builder.mutation<{ user: User; token: string }, Partial<RegisterCredentials>>({
-      query: (body) => ({
+    // registration requires a multipart form (including an uploaded profile picture),
+    // so we accept a FormData object here instead of a plain JSON credential type.
+    register: builder.mutation<{ user: User; token: string }, FormData>({
+      query: (formData) => ({
         url: "/user/register",
         method: "POST",
-        // send JSON; the server should expect an object, not a multipart form
-        body,
+        // FormData automatically sets the correct multipart headers.
+        body: formData,
       }),
       invalidatesTags: ["Auth"],
     }),

@@ -57,12 +57,12 @@ export default function SignUp() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      if (file.size > 1 * 1024 * 1024) {
+      if (file.size > 2 * 1024 * 1024) {
         e.target.value = ""
         Swal.fire({
           icon: "warning",
           title: "File Too Large",
-          text: "Profile photo must be less than 1 MB. Please select a smaller image.",
+          text: "Profile photo must be less than 2 MB. Please select a smaller image.",
           background: "#1A1A28",
           color: "#fff",
           confirmButtonColor: "#6200EE",
@@ -87,8 +87,8 @@ export default function SignUp() {
     if (!profileImage) newErrors.profileImage = "Profile image is required"
     else if (!/^image\//.test(profileImage.type))
       newErrors.profileImage = "Please upload a valid image file"
-    else if (profileImage.size > 1 * 1024 * 1024)
-      newErrors.profileImage = "Image must be smaller than 1 MB"
+    else if (profileImage.size > 2 * 1024 * 1024)
+      newErrors.profileImage = "Image must be smaller than 2 MB"
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -127,7 +127,7 @@ export default function SignUp() {
         })
         router.push("/auth/signin")
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error("registration error", err)
       const errorMsg: string = err?.data?.error || ""
       let alertText = "Something went wrong. Please try again."
