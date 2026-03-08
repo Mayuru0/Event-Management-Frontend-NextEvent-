@@ -158,7 +158,7 @@ const Header = () => {
                     {/* Active indicator */}
                     <motion.span
                       layoutId="nav-indicator"
-                      className="absolute bottom-1 left-1/2 -translate-x-1/2 h-[2px] rounded-full bg-gradient-to-r from-[#6200EE] to-[#03DAC6]"
+                      className=" absolute bottom-1 left-4 -translate-x-1 h-[2px] rounded-full bg-gradient-to-r from-[#6200EE] to-[#03DAC6]"
                       initial={false}
                       animate={{
                         width: activeSection === link.href ? "60%" : "0%",

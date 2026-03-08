@@ -55,24 +55,40 @@ export default function SignUp() {
   }
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) {
-        e.target.value = ""
-        Swal.fire({
-          icon: "warning",
-          title: "File Too Large",
-          text: "Profile photo must be less than 2 MB. Please select a smaller image.",
-          background: "#1A1A28",
-          color: "#fff",
-          confirmButtonColor: "#6200EE",
-        })
-        return
-      }
-      setProfileImage(file)
-      setPreviewImage(URL.createObjectURL(file))
+  const file = e.target.files?.[0];
+  if (file) {
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+
+    if (!fileExtension || !(fileExtension === "jpg" || fileExtension === "png")) {
+      e.target.value = "";
+      Swal.fire({
+        icon: "warning",
+        title: "Invalid Format",
+        text: "Please select a JPG or PNG image. JPEG files are not allowed.",
+        background: "#1A1A28",
+        color: "#fff",
+        confirmButtonColor: "#6200EE",
+      });
+      return;
     }
+
+    if (file.size > 2 * 1024 * 1024) {
+      e.target.value = "";
+      Swal.fire({
+        icon: "warning",
+        title: "File Too Large",
+        text: "Profile photo must be less than 2 MB. Please select a smaller image.",
+        background: "#1A1A28",
+        color: "#fff",
+        confirmButtonColor: "#6200EE",
+      });
+      return;
+    }
+
+    setProfileImage(file);
+    setPreviewImage(URL.createObjectURL(file));
   }
+};
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
@@ -85,8 +101,8 @@ export default function SignUp() {
     else if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters"
     if (!formData.gender) newErrors.gender = "Gender is required"
     if (!profileImage) newErrors.profileImage = "Profile image is required"
-    else if (!/^image\//.test(profileImage.type))
-      newErrors.profileImage = "Please upload a valid image file"
+    else if (!/^image\/(jpg|png)$/.test(profileImage.type))
+      newErrors.profileImage = "Only PNG or JPG images are allowed for the profile (no JPEG)"
     else if (profileImage.size > 2 * 1024 * 1024)
       newErrors.profileImage = "Image must be smaller than 2 MB"
     setErrors(newErrors)

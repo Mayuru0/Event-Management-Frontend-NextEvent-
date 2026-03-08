@@ -81,7 +81,7 @@ const OrganizerSideBar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed lg:relative top-0 lg:top-auto left-0 h-screen lg:h-auto w-72 lg:w-64 flex flex-col bg-[#161616] lg:bg-[#1A1A1A] border-r border-white/5 lg:border-none lg:rounded-3xl lg:rounded-r-none lg:mt-28 transition-transform duration-300 z-50 shadow-2xl lg:shadow-none overflow-hidden ${
+        className={`fixed lg:relative top-0 lg:top-auto left-0 h-screen lg:h-auto w-72 lg:w-64 flex flex-col bg-[#161616] lg:bg-[#1A1A1A] border-r border-white/5 lg:border-none lg:rounded-3xl lg:rounded-r-none lg:mt-28 transition-transform duration-300 z-10 shadow-2xl lg:shadow-none overflow-hidden ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
         }`}
       >
