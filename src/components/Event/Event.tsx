@@ -39,7 +39,8 @@ const Event = () => {
     }
   }
 
-  const pendingEvents = events.filter((event) => event.status === "Pending").slice(0, 3)
+  // grab a few recently published events for the homepage
+  const publishedEvents = events.filter((event) => event.status === "Published").slice(0, 3)
 
   if (isLoading) {
     return (
@@ -65,7 +66,7 @@ const Event = () => {
     )
   }
 
-  if (pendingEvents.length === 0) {
+  if (publishedEvents.length === 0) {
     return (
       <div className="flex justify-center py-24 bg-[#0A0A0F]">
         <p className="text-gray-500">No upcoming events available.</p>
@@ -103,7 +104,7 @@ const Event = () => {
 
         {/* Event cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {pendingEvents.map((event, index) => (
+          {publishedEvents.map((event, index) => (
             <motion.div
               key={event._id || index}
               initial={{ opacity: 0, y: 30 }}

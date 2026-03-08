@@ -10,6 +10,7 @@ export const paymentApiSlice = apiSlice.injectEndpoints({
         method: "POST",
       }),
       transformResponse: (response: { success: boolean; data: PaymentType }) => response.data,
+      invalidatesTags: ["Event"],
     }),
 
     getPaymentBySessionId: builder.query<PaymentType, string>({

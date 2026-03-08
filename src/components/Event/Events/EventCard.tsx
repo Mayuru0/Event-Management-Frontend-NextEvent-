@@ -58,7 +58,8 @@ export default function EventCard() {
       .filter((event) => {
         const eventDate = new Date(event.date)
         return (
-          event.status === "Pending" &&
+          // only display events that have been published
+          event.status === "Published" &&
           (filters.location === "" || event.location === filters.location) &&
           (filters.date === "" || eventDate.toISOString().split("T")[0] === filters.date) &&
           (filters.event_type === "" || event.event_type === filters.event_type)
