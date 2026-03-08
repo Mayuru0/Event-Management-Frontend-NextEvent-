@@ -57,6 +57,18 @@ export default function SignUp() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
+      if (file.size > 1 * 1024 * 1024) {
+        e.target.value = ""
+        Swal.fire({
+          icon: "warning",
+          title: "File Too Large",
+          text: "Profile photo must be less than 1 MB. Please select a smaller image.",
+          background: "#1A1A28",
+          color: "#fff",
+          confirmButtonColor: "#6200EE",
+        })
+        return
+      }
       setProfileImage(file)
       setPreviewImage(URL.createObjectURL(file))
     }
@@ -73,7 +85,10 @@ export default function SignUp() {
     else if (formData.password.length < 6) newErrors.password = "Password must be at least 6 characters"
     if (!formData.gender) newErrors.gender = "Gender is required"
     if (!profileImage) newErrors.profileImage = "Profile image is required"
-    else if (!/^image\//.test(profileImage.type)) newErrors.profileImage = "Please upload a valid image file"
+    else if (!/^image\//.test(profileImage.type))
+      newErrors.profileImage = "Please upload a valid image file"
+    else if (profileImage.size > 1 * 1024 * 1024)
+      newErrors.profileImage = "Image must be smaller than 1 MB"
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -94,8 +109,13 @@ export default function SignUp() {
     form.append("password", formData.password)
     if (profileImage) form.append("profilePic", profileImage)
 
+    // log entries so we can verify what is sent
+    for (const pair of form.entries()) {
+      console.log("form entry", pair[0], pair[1])
+    }
+
     try {
-      const response = await register(form as any).unwrap()
+      const response = await register(form).unwrap()
       if (response) {
         Swal.fire({
           icon: "success",
@@ -107,11 +127,29 @@ export default function SignUp() {
         })
         router.push("/auth/signin")
       }
-    } catch {
+    } catch (err) {
+      console.error("registration error", err)
+      const errorMsg: string = err?.data?.error || ""
+      let alertText = "Something went wrong. Please try again."
+
+      if (errorMsg.includes("dup key")) {
+        if (errorMsg.includes("nic_1")) {
+          alertText = "This NIC number is already registered. Please use a different NIC."
+        } else if (errorMsg.includes("email_1")) {
+          alertText = "This email address is already registered. Please use a different email."
+        } else if (errorMsg.includes("contactNumber_1")) {
+          alertText = "This contact number is already registered. Please use a different number."
+        } else {
+          alertText = "An account with these details already exists. Please check your information."
+        }
+      } else if (err?.data?.message) {
+        alertText = err.data.message
+      }
+
       Swal.fire({
         icon: "error",
         title: "Registration Failed",
-        text: "Something went wrong. Please try again.",
+        text: alertText,
         background: "#1A1A28",
         color: "#fff",
         confirmButtonColor: "#6200EE",
@@ -157,28 +195,28 @@ export default function SignUp() {
               <p className="text-gray-500 text-sm mb-6">Join us today as a Customer or Organizer.</p>
 
               {/* Profile image */}
-              <div className="flex justify-center mb-7">
-                <div className="relative">
-                  <label
-                    htmlFor="profileImage"
-                    className="relative w-20 h-20 rounded-full overflow-hidden bg-[#1A1A28] border-2 border-[#6200EE]/35 cursor-pointer flex items-center justify-center hover:border-[#6200EE]/60 transition-colors"
-                  >
-                    {previewImage ? (
-                      <Image src={previewImage} alt="Preview" width={80} height={80} className="object-cover w-full h-full" />
-                    ) : (
-                      <div className="relative w-full h-full">
-                        <Image src={profilePic} alt="Profile" fill className="object-cover opacity-35" />
-                        <Camera className="absolute inset-0 m-auto w-6 h-6 text-[#03DAC6]" />
-                      </div>
-                    )}
-                    <input type="file" id="profileImage" accept="image/*" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
-                  </label>
-                  {errors.profileImage && (
-                    <p className="absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap text-red-400 text-xs">
-                      {errors.profileImage}
-                    </p>
+              <div className="flex flex-col items-center mb-7">
+                <label
+                  htmlFor="profileImage"
+                  className={`relative w-20 h-20 rounded-full overflow-hidden bg-[#1A1A28] border-2 cursor-pointer flex items-center justify-center transition-colors ${
+                    errors.profileImage
+                      ? "border-red-500/70 hover:border-red-500"
+                      : "border-[#6200EE]/35 hover:border-[#6200EE]/60"
+                  }`}
+                >
+                  {previewImage ? (
+                    <Image src={previewImage} alt="Preview" width={80} height={80} className="object-cover w-full h-full" />
+                  ) : (
+                    <div className="relative w-full h-full">
+                      <Image src={profilePic} alt="Profile" fill className="object-cover opacity-35" />
+                      <Camera className="absolute inset-0 m-auto w-6 h-6 text-[#03DAC6]" />
+                    </div>
                   )}
-                </div>
+                  <input type="file" id="profileImage" accept="image/*" onChange={handleImageChange} className="absolute inset-0 opacity-0 cursor-pointer" />
+                </label>
+                {errors.profileImage && (
+                  <p className="text-red-400 text-xs mt-2 text-center">{errors.profileImage}</p>
+                )}
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-3.5 mt-4">

@@ -22,11 +22,12 @@ interface RefreshTokenResponse {
 
 export const authApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
-    register: builder.mutation<{ user: User; token: string }, RegisterCredentials>({
-      query: (formData) => ({
+    register: builder.mutation<{ user: User; token: string }, Partial<RegisterCredentials>>({
+      query: (body) => ({
         url: "/user/register",
         method: "POST",
-        body: formData,
+        // send JSON; the server should expect an object, not a multipart form
+        body,
       }),
       invalidatesTags: ["Auth"],
     }),
