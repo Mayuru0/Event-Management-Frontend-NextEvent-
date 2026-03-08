@@ -65,7 +65,7 @@ const OrganizerCustomer = () => {
   }
 
   return (
-    <div className="bg-[#1F1F1F] min-h-[700px] rounded-3xl md:rounded-r-3xl mt-28 text-white flex justify-center py-8">
+    <div className="bg-[#1F1F1F] min-h-screen rounded-3xl md:rounded-r-3xl mt-28 text-white flex justify-center py-8">
       <div className="w-full max-w-5xl px-4 md:px-6 py-6 md:py-12">
 
         {/* Header */}

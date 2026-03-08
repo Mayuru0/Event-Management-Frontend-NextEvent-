@@ -29,7 +29,7 @@ const RevenueChart: React.FC<RevenueChartProps> = ({ thisYearData, lastYearData 
   const yMax = Math.ceil(maxValue / 1000) * 1000;
 
   return (
-    <div className="bg-[#121212] p-6 rounded-2xl">
+    <div className="bg-[#121212] p-6 rounded-2xl ">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-white/90 text-base font-semibold">
           Total Revenue{" "}

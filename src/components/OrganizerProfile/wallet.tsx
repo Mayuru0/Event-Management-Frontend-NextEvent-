@@ -36,7 +36,7 @@ function Wallet() {
   }
 
   return (
-    <div className="p-4 sm:p-6 py-10 max-w-4xl mx-auto bg-transparent rounded-3xl md:rounded-r-3xl mt-28">
+    <div className="p-4 sm:p-6 py-10 max-w-4xl mx-auto bg-transparent rounded-3xl md:rounded-r-3xl mt-28 min-h-screen">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <div>

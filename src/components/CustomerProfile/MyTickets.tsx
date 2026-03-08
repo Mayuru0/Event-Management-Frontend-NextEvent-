@@ -1,138 +1,200 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { CircleArrowDownIcon as CircleDown } from "lucide-react"
-import { useSelector } from "react-redux"
-import { selectuser } from "@/Redux/features/authSlice"
-import { useGetTicketsUserIdQuery } from "@/Redux/features/ticketApiSlice"
+import { useState } from "react";
+import { Download, Ticket, Calendar, MapPin, ChevronLeft, ChevronRight } from "lucide-react";
+import { useSelector } from "react-redux";
+import { selectuser } from "@/Redux/features/authSlice";
+import { useGetTicketsUserIdQuery } from "@/Redux/features/ticketApiSlice";
 
 function MyTickets() {
-  const user = useSelector(selectuser)
-  const UserId = user?._id
+  const user = useSelector(selectuser);
+  const UserId = user?._id;
 
-  const { data: tickets = [], isLoading, isError } = useGetTicketsUserIdQuery(UserId as string)
+  const { data: tickets = [], isLoading, isError } = useGetTicketsUserIdQuery(UserId as string);
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 3 // Number of items per page
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
 
-  // Calculate total number of pages
-  const totalPages = Math.ceil(tickets.length / itemsPerPage)
+  const totalPages = Math.ceil(tickets.length / itemsPerPage);
+  const paginatedTickets = tickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-  // Get the tickets to display for the current page
-  const paginatedTickets = tickets.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const handlePageChange = (page: number) => {
+    if (page > 0 && page <= totalPages) setCurrentPage(page);
+  };
 
   if (isLoading) {
-    return <p className="text-center text-xl font-semibold text-white relative -mt-[20%]">Loading Ticket...</p>
+    return (
+      <div className="bg-[#1A1A1A] rounded-3xl md:rounded-r-3xl md:mt-28 overflow-hidden">
+        <div className="h-1.5 bg-gradient-to-r from-[#6200EE] via-[#03DAC6] to-[#6200EE]" />
+        <div className="p-8 animate-pulse space-y-4">
+          <div className="h-6 bg-white/5 rounded w-1/4" />
+          <div className="h-4 bg-white/5 rounded w-1/3" />
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-16 bg-white/5 rounded-xl" />
+          ))}
+        </div>
+      </div>
+    );
   }
 
   if (isError) {
-    return <p className="text-center text-red-500 text-lg font-semibold">Failed to load Ticket.</p>
-  }
-
-  // Handle page change
-  const handlePageChange = (page: number) => {
-    if (page > 0 && page <= totalPages) {
-      setCurrentPage(page)
-    }
+    return (
+      <div className="bg-[#1A1A1A] rounded-3xl md:rounded-r-3xl md:mt-28 overflow-hidden">
+        <div className="h-1.5 bg-gradient-to-r from-[#6200EE] via-[#03DAC6] to-[#6200EE]" />
+        <div className="p-8 text-center">
+          <p className="text-red-400 font-medium">Failed to load tickets. Please try again.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
-    <div className="bg-[#1F1F1F]  rounded-3xl md:rounded-r-3xl md:mt-28 text-white flex justify-center py-8">
-      <div className="w-full max-w-4xl px-4 md:px-6 py-6 md:py-12">
-        <h2 className="text-lg font-semibold mb-2">My Tickets</h2>
-        <p className="text-gray-400 mb-4 text-sm">Download your tickets and view purchase history.</p>
+    <div className="bg-[#1A1A1A] rounded-3xl md:rounded-r-3xl md:mt-28 overflow-hidden">
+      {/* Top gradient bar */}
+      <div className="h-1.5 bg-gradient-to-r from-[#6200EE] via-[#03DAC6] to-[#6200EE]" />
 
-        {/* Desktop Table - Hidden on mobile */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full border-collapse border border-gray-700 text-sm">
-            <thead>
-              <tr className="bg-gray-400 text-black text-left">
-                <th className="p-2">Title</th>
-                <th className="p-1">Date</th>
-                <th className="p-1">Location</th>
-                <th className="p-1">Tickets</th>
-                <th className="p-1">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {paginatedTickets.map((ticket, index) => (
-                <tr key={index} className="bg-[#1F1F1F] border-b border-gray-600">
-                  <td className="p-2">{ticket.event_title}</td>
-                  <td className="p-1">{new Date(ticket.date || "Unknown Date").toLocaleDateString()}</td>
-                  <td className="p-1">{ticket.location}</td>
-                  <td className="p-1">{ticket.quantity}</td>
-                  <td className="p-1">
-                    <button className="flex items-center bg-teal-400 text-black px-1 py-0.5 text-xs rounded-lg">
-                      Download <CircleDown className="ml-1 w-3 h-3" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+      <div className="p-6 md:p-8">
+        {/* Header */}
+        <div className="flex items-start justify-between mb-8">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Ticket className="w-5 h-5 text-[#03DAC6]" />
+              <h2 className="text-2xl font-bold text-white tracking-tight">My Tickets</h2>
+            </div>
+            <p className="text-gray-500 text-sm">Download your tickets and view purchase history.</p>
+          </div>
+          <div className="bg-[#03DAC6]/10 border border-[#03DAC6]/20 px-3 py-1.5 rounded-lg">
+            <span className="text-[#03DAC6] text-sm font-semibold">{tickets.length} total</span>
+          </div>
         </div>
 
-        {/* Mobile Card Layout - Shown only on mobile */}
-        <div className="md:hidden space-y-4">
-          {paginatedTickets.map((ticket, index) => (
-            <div key={index} className="p-4 rounded-lg border border-gray-700 bg-[#2A2A2A]">
-              <h3 className="font-medium text-base mb-2">{ticket.event_title}</h3>
+        {tickets.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-20 text-gray-600">
+            <Ticket className="w-12 h-12 mb-4 opacity-30" />
+            <p className="text-lg font-medium text-gray-500">No tickets yet</p>
+            <p className="text-sm mt-1">Your purchased tickets will appear here.</p>
+          </div>
+        ) : (
+          <>
+            {/* Desktop Table */}
+            <div className="hidden md:block overflow-x-auto rounded-xl border border-white/5">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-[#242424] text-gray-400 text-left">
+                    <th className="px-4 py-3 font-medium rounded-tl-xl">Event</th>
+                    <th className="px-4 py-3 font-medium">Date</th>
+                    <th className="px-4 py-3 font-medium">Location</th>
+                    <th className="px-4 py-3 font-medium text-center">Qty</th>
+                    <th className="px-4 py-3 font-medium text-center rounded-tr-xl">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-white/5">
+                  {paginatedTickets.map((ticket, index) => (
+                    <tr key={index} className="hover:bg-white/3 transition-colors group">
+                      <td className="px-4 py-3.5 text-white font-medium">{ticket.event_title}</td>
+                      <td className="px-4 py-3.5 text-gray-400">
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5 text-gray-600" />
+                          {new Date(ticket.date || "").toLocaleDateString("en-US", {
+                            month: "short", day: "numeric", year: "numeric",
+                          })}
+                        </div>
+                      </td>
+                      <td className="px-4 py-3.5 text-gray-400">
+                        <div className="flex items-center gap-1.5">
+                          <MapPin className="w-3.5 h-3.5 text-gray-600" />
+                          <span className="truncate max-w-[140px] block">{ticket.location}</span>
+                        </div>
+                      </td>
+                      <td className="px-4 py-3.5 text-center">
+                        <span className="bg-[#6200EE]/15 text-[#03DAC6] border border-[#6200EE]/20 px-2.5 py-0.5 rounded-full text-xs font-semibold">
+                          {ticket.quantity}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3.5 text-center">
+                        <button className="inline-flex items-center gap-1.5 bg-[#03DAC6]/15 hover:bg-[#03DAC6]/25 text-[#03DAC6] border border-[#03DAC6]/20 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all">
+                          <Download className="w-3 h-3" />
+                          Download
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
-              <div className="grid grid-cols-2 gap-2 text-sm text-gray-300 mb-3">
-                <div>
-                  <p className="text-xs text-gray-400">Date</p>
-                  <p>{new Date(ticket.date || "Unknown Date").toLocaleDateString()}</p>
+            {/* Mobile Cards */}
+            <div className="md:hidden space-y-3">
+              {paginatedTickets.map((ticket, index) => (
+                <div key={index} className="p-4 rounded-xl border border-white/8 bg-[#202020] hover:border-white/12 transition-colors">
+                  <div className="flex items-start justify-between mb-3">
+                    <h3 className="font-semibold text-white text-sm leading-snug flex-1 mr-2">{ticket.event_title}</h3>
+                    <span className="bg-[#6200EE]/15 text-[#03DAC6] border border-[#6200EE]/20 px-2 py-0.5 rounded-full text-xs font-semibold shrink-0">
+                      {ticket.quantity} tickets
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2 text-xs text-gray-400 mb-3">
+                    <div className="flex items-center gap-1.5">
+                      <Calendar className="w-3.5 h-3.5 text-gray-600 shrink-0" />
+                      {new Date(ticket.date || "").toLocaleDateString("en-US", {
+                        month: "short", day: "numeric", year: "numeric",
+                      })}
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-gray-600 shrink-0" />
+                      <span className="truncate">{ticket.location}</span>
+                    </div>
+                  </div>
+                  <button className="w-full flex items-center justify-center gap-2 bg-[#03DAC6]/15 hover:bg-[#03DAC6]/25 text-[#03DAC6] border border-[#03DAC6]/20 px-3 py-2 rounded-lg text-xs font-semibold transition-all">
+                    <Download className="w-3.5 h-3.5" />
+                    Download Ticket
+                  </button>
                 </div>
-                <div>
-                  <p className="text-xs text-gray-400">Location</p>
-                  <p>{ticket.location}</p>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-400">Tickets</p>
-                  <p>{ticket.quantity}</p>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex items-center justify-between mt-6 pt-4 border-t border-white/5">
+                <p className="text-xs text-gray-600">
+                  Showing {(currentPage - 1) * itemsPerPage + 1}–{Math.min(currentPage * itemsPerPage, tickets.length)} of {tickets.length}
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#242424] hover:bg-[#2a2a2a] text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  {[...Array(totalPages)].map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => handlePageChange(i + 1)}
+                      className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-medium transition-colors ${
+                        currentPage === i + 1
+                          ? "bg-[#6200EE] text-white"
+                          : "bg-[#242424] hover:bg-[#2a2a2a] text-gray-400"
+                      }`}
+                    >
+                      {i + 1}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-[#242424] hover:bg-[#2a2a2a] text-gray-400 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
                 </div>
               </div>
-
-              <button className="flex items-center bg-teal-400 text-black px-3 py-1 rounded-lg text-sm">
-                Download <CircleDown className="ml-2 w-4 h-4" />
-              </button>
-            </div>
-          ))}
-        </div>
-
-        {/* Pagination Controls - Enhanced for Mobile */}
-        <div className="flex flex-col sm:flex-row justify-center items-center mt-6 gap-3">
-          {/* Page indicator for mobile */}
-          <div className="text-white text-sm bg-[#2A2A2A] px-3 py-1 rounded-full mb-3 sm:hidden">
-            {`Page ${currentPage} of ${totalPages}`}
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm disabled:opacity-50 disabled:bg-gray-900 min-w-[80px] touch-manipulation"
-              onClick={() => handlePageChange(currentPage - 1)}
-              disabled={currentPage === 1}
-            >
-              Prev
-            </button>
-
-            {/* Page indicator for tablet/desktop */}
-            <span className="hidden sm:flex text-white text-sm items-center px-3">{`Page ${currentPage} of ${totalPages}`}</span>
-
-            <button
-              className="bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm disabled:opacity-50 disabled:bg-gray-900 min-w-[80px] touch-manipulation"
-              onClick={() => handlePageChange(currentPage + 1)}
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
-          </div>
-        </div>
+            )}
+          </>
+        )}
       </div>
     </div>
-  )
+  );
 }
 
-export default MyTickets
-
+export default MyTickets;

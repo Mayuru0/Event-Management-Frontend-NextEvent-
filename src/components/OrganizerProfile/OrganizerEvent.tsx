@@ -76,7 +76,7 @@ const OrganizerEvents: React.FC<OrganizerEventsProps> = ({ onView }) => {
       {/* Creation Side Panel */}
       {isSidebarOpen && <NewEventSideBar onClose={() => setSidebarOpen(false)} />}
 
-      <div className="bg-[#1F1F1F] rounded-3xl md:rounded-r-3xl mt-28 text-white flex justify-center py-8">
+      <div className="bg-[#1F1F1F] rounded-3xl md:rounded-r-3xl mt-28 text-white flex justify-center py-8 min-h-screen">
         <div className="w-full max-w-4xl px-4 md:px-6 py-6 md:py-12">
 
           {/* Header */}
