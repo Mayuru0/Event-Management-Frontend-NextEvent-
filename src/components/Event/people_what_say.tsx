@@ -361,7 +361,7 @@ const PeopleWhatSay = () => {
         >
           {!user ? (
             <a
-              href="/signin"
+              href="/auth/signin"
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#111118] border border-white/10 text-gray-400 hover:text-white hover:border-[#6200EE]/40 transition-all duration-300 text-sm"
             >
               <LogIn className="w-4 h-4" />
